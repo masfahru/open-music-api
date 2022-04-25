@@ -1,5 +1,3 @@
-const { ClientError } = require('open-music-exceptions');
-
 /**
  * Class to handle requests related to songs.
  */
@@ -45,41 +43,22 @@ module.exports = class SongsHandler {
    */
   async getAllSongsHandler(request, h) {
     const { title, year, performer, genre, duration, albumId } = request.query;
-    try {
-      const songs = await this.#songsDAL.getAllSongs({
-        title,
-        year,
-        performer,
-        genre,
-        duration,
-        albumId,
-      });
-      const response = h.response({
-        status: 'success',
-        data: {
-          songs,
-        },
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi galat pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const songs = await this.#songsDAL.getAllSongs({
+      title,
+      year,
+      performer,
+      genre,
+      duration,
+      albumId,
+    });
+    const response = h.response({
+      status: 'success',
+      data: {
+        songs,
+      },
+    });
+    response.code(200);
+    return response;
   }
 
   /**
@@ -93,35 +72,16 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async getSongByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      const song = await this.#songsDAL.getSongById(id);
-      const response = h.response({
-        status: 'success',
-        data: {
-          song,
-        },
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi galat pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const { id } = request.params;
+    const song = await this.#songsDAL.getSongById(id);
+    const response = h.response({
+      status: 'success',
+      data: {
+        song,
+      },
+    });
+    response.code(200);
+    return response;
   }
 
   /**
@@ -135,36 +95,17 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async postSongHandler(request, h) {
-    try {
-      const song = this.#songValidator.validate(request.payload);
-      const songId = await this.#songsDAL.postSong(song);
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil ditambahkan',
-        data: {
-          songId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi galat pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const song = this.#songValidator.validate(request.payload);
+    const songId = await this.#songsDAL.postSong(song);
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan',
+      data: {
+        songId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -179,35 +120,15 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async putSongByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      const song = this.#songValidator.validate(request.payload);
-      await this.#songsDAL.putSongById(id, song);
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil diperbarui',
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi galat pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const { id } = request.params;
+    const song = this.#songValidator.validate(request.payload);
+    await this.#songsDAL.putSongById(id, song);
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil diperbarui',
+    });
+    response.code(200);
+    return response;
   }
 
   /**
@@ -221,32 +142,13 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async deleteSongByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      await this.#songsDAL.deleteSongById(id);
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil dihapus',
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi galat pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const { id } = request.params;
+    await this.#songsDAL.deleteSongById(id);
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil dihapus',
+    });
+    response.code(200);
+    return response;
   }
 };
