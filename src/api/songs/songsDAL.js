@@ -30,7 +30,7 @@ module.exports = class SongsDAL {
    */
   async getAllSongs(queryStrings) {
     const query = {
-      text: 'SELECT * FROM songs',
+      text: 'SELECT id, title, performer FROM songs',
       values: [],
     };
 
@@ -50,11 +50,7 @@ module.exports = class SongsDAL {
       throw new NotFoundError('Belum ada lagu yang ditambahkan');
     }
 
-    return result.rows.map(({ id, title, performer }) => ({
-      id,
-      title,
-      performer,
-    }));
+    return result.rows;
   }
 
   /**
