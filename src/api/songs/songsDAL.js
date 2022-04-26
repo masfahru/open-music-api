@@ -62,7 +62,7 @@ module.exports = class SongsDAL {
    */
   async getSongById(id) {
     const query = {
-      text: 'SELECT * FROM songs WHERE id = $1',
+      text: 'SELECT id, title, year, performer, genre, duration, album_id FROM songs WHERE id = $1',
       values: [id],
     };
 
@@ -82,7 +82,7 @@ module.exports = class SongsDAL {
    * @throws {InvariantError} - Invalid song or song already exists or database error
    */
   async postSong({ title, year, performer, genre, duration, albumId }) {
-    const id = nanoid();
+    const id = `song-${nanoid()}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
     const query = {

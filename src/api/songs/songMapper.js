@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 
 /**
- * songDbToModel: map song object from database to Song model
+ * songDbToModel: map song object from database to proper Song object
  * @param {object} song - Song object from database
- * @returns {object} - Song model
+ * @returns {object} - Song object
  */
 const songDbToModel = ({
   id, title, year, performer, genre, duration, album_id,

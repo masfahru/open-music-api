@@ -88,7 +88,7 @@ module.exports = class AlbumsDAL {
    * @throws {InvariantError} - Invalid album or album already exists or database error
    */
   async postAlbum({ name, year }) {
-    const id = nanoid();
+    const id = `album-${nanoid()}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
     const query = {
