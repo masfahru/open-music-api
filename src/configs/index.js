@@ -9,11 +9,15 @@ const joi = require('joi');
  * NODE_ENV
  * HOST
  * PORT
+ *
  * PGHOST
  * PGPORT
  * PGUSER
  * PGPASSWORD
  * PGDATABASE
+ *
+ * JWT_ACCESS_TOKEN_KEY
+ * JWT_REFRESH_TOKEN_KEY
  */
 // Joi Schema
 const envVarsSchema = joi

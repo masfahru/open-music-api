@@ -2,6 +2,7 @@ const Hapi = require('@hapi/hapi');
 const { ClientError } = require('open-music-exceptions');
 const songs = require('./api/songs');
 const albums = require('./api/albums');
+const users = require('./api/users');
 const DbServices = require('./services/postgresql/dbService');
 const { serverConfig } = require('./configs');
 
@@ -30,6 +31,12 @@ const init = async () => {
     },
     {
       plugin: albums,
+      options: {
+        dbService,
+      },
+    },
+    {
+      plugin: users,
       options: {
         dbService,
       },
