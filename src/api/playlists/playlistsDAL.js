@@ -75,14 +75,14 @@ module.exports = class PlaylistsDAL {
   /**
    * Delete playlist by id.
    * @async
-   * @param {{playListId: string}} - Playlist Id
+   * @param {{playlistId: string}} - Playlist Id
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async deletePlaylistById({ playListId }) {
+  async deletePlaylistById({ playlistId }) {
     const query = {
       text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
-      values: [playListId],
+      values: [playlistId],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
@@ -93,14 +93,14 @@ module.exports = class PlaylistsDAL {
   /**
    * Verify playlist owner
    * @async
-   * @param {{playListId: string, owner:string}}
+   * @param {{playlistId: string, owner:string}}
    * @returns {void}
    * @throws {AuthorizationError}
    */
-  async verifyPlaylistOwner({ playListId, owner }) {
+  async verifyPlaylistOwner({ playlistId, owner }) {
     const query = {
       text: 'SELECT owner FROM playlists WHERE id = $1',
-      values: [playListId],
+      values: [playlistId],
     };
     const result = await this.#dbService.query(query);
     if (result.rows[0] && result.rows[0].owner !== owner) {
@@ -111,17 +111,17 @@ module.exports = class PlaylistsDAL {
   /**
    * Post Song to playlist by id
    * @async
-   * @param {{playListId: string, songId: string}} - Playlist Id and Song Id
+   * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async postSongToPlaylistById({ playListId, songId }) {
+  async postSongToPlaylistById({ playlistId, songId }) {
     const client = await this.#dbService.getClient();
     try {
       await client.query('BEGIN');
       const queryPlaylist = {
         text: 'SELECT id FROM playlists WHERE id = $1',
-        values: [playListId],
+        values: [playlistId],
       };
       const playlist = await this.#dbService.query(queryPlaylist);
       if (!playlist.rows[0]) {
@@ -139,7 +139,7 @@ module.exports = class PlaylistsDAL {
       const createdAt = new Date().toISOString();
       const query = {
         text: 'INSERT INTO playlist_songs VALUES($1, $2, $3, $4) returning id',
-        values: [id, playListId, songId, createdAt],
+        values: [id, playlistId, songId, createdAt],
       };
       const res = await client.query(query);
       if (!res.rows[0].id) {
@@ -157,11 +157,11 @@ module.exports = class PlaylistsDAL {
   /**
    * Get all songs in playlist by id
    * @async
-   * @param {{playListId: string}} - Playlist Id
+   * @param {{playlistId: string}} - Playlist Id
    * @return {Promise<object[]>} - Playlist with List of songs
    * @throws {NotFoundError}
    */
-  async getAllSongsInPlaylistById({ playListId }) {
+  async getAllSongsInPlaylistById({ playlistId }) {
     const client = await this.#dbService.getClient();
     try {
       await client.query('BEGIN');
@@ -170,7 +170,7 @@ module.exports = class PlaylistsDAL {
         FROM playlists LEFT JOIN users 
         ON playlists.owner = users.id 
         WHERE playlists.id = $1`,
-        values: [playListId],
+        values: [playlistId],
       };
 
       const playlists = await this.#dbService.query(queryPlaylist);
@@ -183,7 +183,7 @@ module.exports = class PlaylistsDAL {
         FROM playlist_songs RIGHT JOIN songs 
         ON playlist_songs.song_id = songs.id
         WHERE playlist_songs.playlist_id = $1`,
-        values: [playListId],
+        values: [playlistId],
       };
 
       const songs = await this.#dbService.query(querySongs);
@@ -203,14 +203,14 @@ module.exports = class PlaylistsDAL {
   /**
    * Delete song from playlist by id
    * @async
-   * @param {{playListId: string, songId: string}} - Playlist Id and Song Id
+   * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async deleteSongFromPlaylistById({ playListId, songId }) {
+  async deleteSongFromPlaylistById({ playlistId, songId }) {
     const query = {
       text: 'DELETE FROM playlist_songs WHERE playlist_id = $1 AND song_id = $2 returning id',
-      values: [playListId, songId],
+      values: [playlistId, songId],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
