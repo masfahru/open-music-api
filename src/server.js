@@ -1,10 +1,12 @@
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 const { ClientError } = require('open-music-api-exceptions');
-const { serverConfig } = require('open-music-api-configs');
+const { serverConfig, jwtConfig } = require('open-music-api-configs');
 const songs = require('./api/songs');
 const albums = require('./api/albums');
 const users = require('./api/users');
 const authentications = require('./api/authentications');
+const playlists = require('./api/playlists');
 const DbService = require('./services/postgresql/dbService');
 
 /**
@@ -21,6 +23,29 @@ const init = async () => {
         origin: ['*'],
       },
     },
+  });
+
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  // Auth jwt Strategy
+  server.auth.strategy('openmusicapi_jwt', 'jwt', {
+    keys: jwtConfig.accessTokenKey,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: 1800,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
   });
 
   await server.register([
@@ -48,6 +73,12 @@ const init = async () => {
         dbService,
       },
     },
+    {
+      plugin: playlists,
+      options: {
+        dbService,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -62,6 +93,10 @@ const init = async () => {
       });
       newResponse.code(response.statusCode);
       return newResponse;
+    }
+
+    if (response instanceof Error) {
+      console.log(response);
     }
 
     // if not error, return the response

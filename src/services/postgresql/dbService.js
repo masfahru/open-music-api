@@ -28,4 +28,34 @@ module.exports = class DbService {
     console.log('PostgreQuery:', { text, duration, rows: res.rowCount });
     return res;
   }
+
+  /**
+   * @method getClient
+   * @returns {Promise<Pool.Client>} - Client object
+   */
+  async getClient() {
+    const client = await this.#pool.connect();
+    const { query, release } = client;
+    // set a timeout of 3 seconds, after which we will log this client's last query
+    const timeout = setTimeout(() => {
+      console.error('A client has been checked out for more than 5 seconds!');
+      console.error(
+        `The last executed query on this client was: ${client.lastQuery}`,
+      );
+    }, 3000);
+    // monkey patch the query method to keep track of the last query executed
+    client.query = (...args) => {
+      client.lastQuery = args;
+      return query.apply(client, args);
+    };
+    client.release = () => {
+      // clear our timeout
+      clearTimeout(timeout);
+      // set the methods back to their old un-monkey-patched version
+      client.query = query;
+      client.release = release;
+      return release.apply(client);
+    };
+    return client;
+  }
 };
