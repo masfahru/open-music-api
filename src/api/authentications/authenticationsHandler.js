@@ -49,10 +49,10 @@ module.exports = class AuthenticationsHandler {
     const { username, password } = this.#validator.validatePostAuthPayload(
       request.payload,
     );
-    const id = await this.#authDAL.verifyUserCredential(username, password);
+    const id = await this.#authDAL.verifyUserCredential({ username, password });
     const accessToken = this.#tokenManager.generateAccessToken({ id });
     const refreshToken = this.#tokenManager.generateRefreshToken({ id });
-    await this.#authDAL.postRefreshToken(refreshToken);
+    await this.#authDAL.postRefreshToken({ refreshToken });
     return h
       .response({
         status: 'success',
@@ -76,8 +76,8 @@ module.exports = class AuthenticationsHandler {
     const { refreshToken } = this.#validator.validatePutAuthPayload(
       request.payload,
     );
-    await this.#authDAL.verifyRefreshToken(refreshToken);
-    const { id } = this.#tokenManager.verifyRefreshToken(refreshToken);
+    await this.#authDAL.verifyRefreshToken({ refreshToken });
+    const { id } = this.#tokenManager.verifyRefreshToken({ refreshToken });
     const accessToken = this.#tokenManager.generateAccessToken({ id });
     return h
       .response({
@@ -99,8 +99,8 @@ module.exports = class AuthenticationsHandler {
    */
   async deleteAuthenticationHandler(request, h) {
     const { refreshToken } = this.#validator.validateDeleteAuthPayload(request.payload);
-    await this.#authDAL.verifyRefreshToken(refreshToken);
-    await this.#authDAL.deleteRefreshToken(refreshToken);
+    await this.#authDAL.verifyRefreshToken({ refreshToken });
+    await this.#authDAL.deleteRefreshToken({ refreshToken });
     return h
       .response({
         status: 'success',

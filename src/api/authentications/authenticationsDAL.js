@@ -23,13 +23,13 @@ module.exports = class AuthenticationsDAL {
   /**
    * Create a new authentication refresh token.
    * @async
-   * @param {string} token - Refresh token
+   * @param {{refreshToken: string}}
    * @returns {void}
    */
-  async postRefreshToken(token) {
+  async postRefreshToken({ refreshToken }) {
     const query = {
       text: 'INSERT INTO authentications VALUES($1)',
-      values: [token],
+      values: [refreshToken],
     };
 
     await this.#dbService.query(query);
@@ -38,14 +38,14 @@ module.exports = class AuthenticationsDAL {
   /**
    * Verify the refresh token.
    * @async
-   * @param {string} token - Refresh token
+   * @param {{refreshToken: string}}
    * @returns {void}
    * @throws {InvariantError}
    */
-  async verifyRefreshToken(token) {
+  async verifyRefreshToken({ refreshToken }) {
     const query = {
       text: 'SELECT token FROM authentications WHERE token = $1',
-      values: [token],
+      values: [refreshToken],
     };
 
     const result = await this.#dbService.query(query);
@@ -57,12 +57,11 @@ module.exports = class AuthenticationsDAL {
   /**
    * Verify Username and Password
    * @async
-   * @param {string} username - User name
-   * @param {string} password - User password
+   * @param {{username: string, password: string}} - User Creditentials
    * @returns {Promise<id>} - User id
    * @throws {AuthenticationError} - if user not found or password incorrect
    */
-  async verifyUserCredential(username, password) {
+  async verifyUserCredential({ username, password }) {
     const query = {
       text: 'SELECT id, password FROM users WHERE username = $1',
       values: [username],
@@ -84,13 +83,13 @@ module.exports = class AuthenticationsDAL {
   /**
    * Delete refresh token from authentication.
    * @async
-   * @param {string} token - Refresh token
+   * @param {{refreshToken: string}}
    * @returns {void}
    */
-  async deleteRefreshToken(token) {
+  async deleteRefreshToken({ refreshToken }) {
     const query = {
       text: 'DELETE FROM authentications WHERE token = $1',
-      values: [token],
+      values: [refreshToken],
     };
 
     await this.#dbService.query(query);

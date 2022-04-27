@@ -22,10 +22,10 @@ const tokenManager = {
 
   /**
    * @method verifyRefreshToken
-   * @param {String} refreshToken - Refresh token to verify.
+   * @param {{refreshToken: string}}  - Refresh token to verify.
    * @returns {{id: String}} - Payload Object
    */
-  verifyRefreshToken: (refreshToken) => {
+  verifyRefreshToken: ({ refreshToken }) => {
     try {
       const artifacts = Jwt.token.decode(refreshToken);
       Jwt.token.verifySignature(artifacts, jwtConfig.refreshTokenKey);
