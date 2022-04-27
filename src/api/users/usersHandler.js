@@ -29,10 +29,9 @@ module.exports = class UsersHandler {
 
   /**
    * Create a new user.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {InvariantError}
    * @throws {ServerError}
@@ -40,14 +39,12 @@ module.exports = class UsersHandler {
   async postUserHandler(request, h) {
     const user = this.#userValidator.validate(request.payload);
     const userId = await this.#usersDAL.postUser(user);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'User berhasil ditambahkan',
       data: {
         userId,
       },
-    });
-    response.code(201);
-    return response;
+    }).code(201);
   }
 };

@@ -3,10 +3,10 @@
  */
 const Joi = require('joi');
 
-const UserSchema = Joi.object({
+const UserPayloadSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
   fullname: Joi.string().required(),
 });
 
-module.exports = { UserSchema };
+module.exports = { UserPayloadSchema };

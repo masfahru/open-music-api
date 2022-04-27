@@ -33,10 +33,9 @@ module.exports = class SongsHandler {
 
   /**
    * Get all songs.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
@@ -51,22 +50,19 @@ module.exports = class SongsHandler {
       duration,
       albumId,
     });
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         songs,
       },
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Get song by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
@@ -74,22 +70,19 @@ module.exports = class SongsHandler {
   async getSongByIdHandler(request, h) {
     const { id } = request.params;
     const song = await this.#songsDAL.getSongById(id);
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         song,
       },
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Create a new song.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {InvariantError}
    * @throws {ServerError}
@@ -97,23 +90,20 @@ module.exports = class SongsHandler {
   async postSongHandler(request, h) {
     const song = this.#songValidator.validate(request.payload);
     const songId = await this.#songsDAL.postSong(song);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Lagu berhasil ditambahkan',
       data: {
         songId,
       },
-    });
-    response.code(201);
-    return response;
+    }).code(201);
   }
 
   /**
    * Update song by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {ValidationError}
    * @throws {NotFoundError}
@@ -123,20 +113,17 @@ module.exports = class SongsHandler {
     const { id } = request.params;
     const song = this.#songValidator.validate(request.payload);
     await this.#songsDAL.putSongById(id, song);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Lagu berhasil diperbarui',
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Delete song by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
@@ -144,11 +131,9 @@ module.exports = class SongsHandler {
   async deleteSongByIdHandler(request, h) {
     const { id } = request.params;
     await this.#songsDAL.deleteSongById(id);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Lagu berhasil dihapus',
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 };

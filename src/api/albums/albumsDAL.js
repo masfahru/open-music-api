@@ -1,8 +1,8 @@
 const { nanoid } = require('nanoid');
-const { InvariantError, NotFoundError } = require('open-music-exceptions');
+const { InvariantError, NotFoundError } = require('open-music-api-exceptions');
 
 /**
- * Database access layer (DAL) for the albums.
+ * Class of Database access layer (DAL) for the albums.
  * @class
  */
 module.exports = class AlbumsDAL {
@@ -14,7 +14,7 @@ module.exports = class AlbumsDAL {
 
   /**
    * @constructor
-   * @param {object} dbService - Database Service
+   * @param {DbService} dbService - Database Service
    */
   constructor(dbService) {
     this.#dbService = dbService;

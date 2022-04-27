@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { InvariantError, NotFoundError } = require('open-music-exceptions');
+const { InvariantError, NotFoundError } = require('open-music-api-exceptions');
 const { songDbToModel } = require('./songMapper');
 
 /**
@@ -15,7 +15,7 @@ module.exports = class SongsDAL {
 
   /**
    * @constructor
-   * @param {object} dbService - Database Service
+   * @param {DbService} dbService - Database Service
    */
   constructor(dbService) {
     this.#dbService = dbService;

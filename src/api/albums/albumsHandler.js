@@ -1,5 +1,6 @@
 /**
  * Class to handle requests related to albums.
+ * @class
  */
 module.exports = class AlbumsHandler {
   /**
@@ -33,32 +34,28 @@ module.exports = class AlbumsHandler {
 
   /**
    * Get all albums.
-   * @param {Object} _ - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} _ - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
    */
   async getAllAlbumsHandler(_, h) {
     const albums = await this.#albumsDAL.getAllAlbums();
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         albums,
       },
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Get album by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
@@ -68,22 +65,19 @@ module.exports = class AlbumsHandler {
     const album = await this.#albumsDAL.getAlbumById(id);
     const songs = await this.#albumsDAL.getSongByAlbumId(id);
     album.songs = songs;
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         album,
       },
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Create a new album.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {InvariantError}
    * @throws {ServerError}
@@ -91,23 +85,20 @@ module.exports = class AlbumsHandler {
   async postAlbumHandler(request, h) {
     const album = this.#albumValidator.validate(request.payload);
     const albumId = await this.#albumsDAL.postAlbum(album);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Album berhasil ditambahkan',
       data: {
         albumId,
       },
-    });
-    response.code(201);
-    return response;
+    }).code(201);
   }
 
   /**
    * Update album by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {ValidationError}
    * @throws {NotFoundError}
@@ -117,20 +108,17 @@ module.exports = class AlbumsHandler {
     const { id } = request.params;
     const album = this.#albumValidator.validate(request.payload);
     await this.#albumsDAL.putAlbumById(id, album);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Album berhasil diperbarui',
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 
   /**
    * Delete album by id.
-   * @param {Object} request - Hapi request object
-   * @param {Object} h - Hapi response object
-   * @return {Object} Hapi response object
-   * @public
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
    * @async
    * @throws {NotFoundError}
    * @throws {ServerError}
@@ -138,11 +126,9 @@ module.exports = class AlbumsHandler {
   async deleteAlbumByIdHandler(request, h) {
     const { id } = request.params;
     await this.#albumsDAL.deleteAlbumById(id);
-    const response = h.response({
+    return h.response({
       status: 'success',
       message: 'Album berhasil dihapus',
-    });
-    response.code(200);
-    return response;
+    }).code(200);
   }
 };

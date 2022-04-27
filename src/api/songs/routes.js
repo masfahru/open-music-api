@@ -1,9 +1,9 @@
 /**
  * Function to route the request to the correct handler.
- * @param {*} handler
- * @returns {Object[]} - list of routes
+ * @param {SongsHandler} handler
+ * @returns {Route[]} list of routes
  */
-module.exports = (handler) => [
+const routes = (handler) => [
   {
     method: 'POST',
     path: '/songs',
@@ -30,3 +30,4 @@ module.exports = (handler) => [
     handler: handler.deleteSongByIdHandler,
   },
 ];
+module.exports = routes;

@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { InvariantError } = require('open-music-exceptions');
+const { InvariantError } = require('open-music-api-exceptions');
 const bcrypt = require('bcrypt');
 
 /**
@@ -15,7 +15,7 @@ module.exports = class UsersDAL {
 
   /**
    * @constructor
-   * @param {object} dbService - Database Service
+   * @param {DbService} dbService - Database Service
    */
   constructor(dbService) {
     this.#dbService = dbService;
@@ -51,7 +51,6 @@ module.exports = class UsersDAL {
    * @returns {void}
    * @throws {InvariantError} - if user already exists
    */
-
   async verifyNewUsername(username) {
     const query = {
       text: 'SELECT username FROM users WHERE username = $1',

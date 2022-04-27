@@ -1,15 +1,18 @@
-const { InvariantError } = require('open-music-exceptions');
-const { SongSchema } = require('./schema');
+const { InvariantError } = require('open-music-api-exceptions');
+const { AlbumPayloadSchema } = require('./schema');
 
-const SongValidator = {
+/**
+ * Album object validator.
+ */
+const AlbumValidator = {
   /**
-   * Validate song object.
-   * @param {object} payload - Song object
-   * @returns {object} - Validated song object
+   * @method validate
+   * @param {object} payload - Album object
+   * @returns {object} - Validated album object
    * @throws {InvariantError} - If payload is not valid
    */
   validate: (payload) => {
-    const validationResult = SongSchema.validate(payload);
+    const validationResult = AlbumPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }
@@ -17,4 +20,4 @@ const SongValidator = {
   },
 };
 
-module.exports = SongValidator;
+module.exports = AlbumValidator;

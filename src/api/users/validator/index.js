@@ -1,15 +1,18 @@
-const { InvariantError } = require('open-music-exceptions');
-const { UserSchema } = require('./schema');
+const { InvariantError } = require('open-music-api-exceptions');
+const { UserPayloadSchema } = require('./schema');
 
+/**
+ * User object validator.
+ */
 const UserValidator = {
   /**
-   * Validate user object.
+   * @method validate
    * @param {object} payload - User object
    * @returns {object} - Validated user object
    * @throws {InvariantError} - If payload is not valid
    */
   validate: (payload) => {
-    const validationResult = UserSchema.validate(payload);
+    const validationResult = UserPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }

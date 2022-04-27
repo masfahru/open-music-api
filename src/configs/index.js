@@ -16,8 +16,8 @@ const joi = require('joi');
  * PGPASSWORD
  * PGDATABASE
  *
- * JWT_ACCESS_TOKEN_KEY
- * JWT_REFRESH_TOKEN_KEY
+ * ACCESS_TOKEN_KEY
+ * REFRESH_TOKEN_KEY
  */
 // Joi Schema
 const envVarsSchema = joi
@@ -34,6 +34,8 @@ const envVarsSchema = joi
     PGUSER: joi.string().required(),
     PGPASSWORD: joi.string().required(),
     PGDATABASE: joi.string().required(),
+    ACCESS_TOKEN_KEY: joi.string().required(),
+    REFRESH_TOKEN_KEY: joi.string().required(),
   })
   .unknown(); // unknown keys other than in Joi schema are allowed
 
@@ -58,4 +60,9 @@ const dbConfig = {
   database: envVars.PGDATABASE,
 };
 
-module.exports = { serverConfig, dbConfig };
+const jwtConfig = {
+  accessTokenKey: envVars.ACCESS_TOKEN_KEY,
+  refreshTokenKey: envVars.REFRESH_TOKEN_KEY,
+};
+
+module.exports = { serverConfig, dbConfig, jwtConfig };

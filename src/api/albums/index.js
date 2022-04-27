@@ -1,18 +1,26 @@
 const AlbumsHandler = require('./albumsHandler');
 const AlbumsDAL = require('./albumsDAL');
-const AlbumValidator = require('./validator');
+const albumValidator = require('./validator');
 const routes = require('./routes');
 
 /**
- * Hapi plugin to register the albums routes.
- * @type {Object}
+ * Hapi Albums Plugin
+ *
+ * Handles all the albums related routes.
  */
-module.exports = {
+const albumsPlugin = {
   name: 'albums',
   version: '1.0.0',
+  /**
+   * @method register
+   * @param {Hapi.Server} server - Hapi Server
+   * @param {{dbService: DbService}} options - Plugin options
+   */
   register: async (server, { dbService }) => {
     const albumsDAL = new AlbumsDAL(dbService);
-    const albumsHandler = new AlbumsHandler(albumsDAL, AlbumValidator);
+    const albumsHandler = new AlbumsHandler(albumsDAL, albumValidator);
     server.route(routes(albumsHandler));
   },
 };
+
+module.exports = albumsPlugin;
