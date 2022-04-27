@@ -29,7 +29,7 @@ module.exports = class UsersDAL {
    * @throws {InvariantError} - Invalid user or user already exists or database error
    */
   async postUser({ username, password, fullname }) {
-    await this.verifyNewUsername(username);
+    await this.verifyNewUsername({ username });
     const id = `user-${nanoid()}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
@@ -49,11 +49,11 @@ module.exports = class UsersDAL {
   /**
    * Verify New Username
    * @async
-   * @param {string} username - User name
+   * @param {{username: string}}
    * @returns {void}
    * @throws {InvariantError} - if user already exists
    */
-  async verifyNewUsername(username) {
+  async verifyNewUsername({ username }) {
     const query = {
       text: 'SELECT username FROM users WHERE username = $1',
       values: [username],
