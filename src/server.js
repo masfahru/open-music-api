@@ -1,17 +1,18 @@
 const Hapi = require('@hapi/hapi');
-const { ClientError } = require('open-music-exceptions');
+const { ClientError } = require('open-music-api-exceptions');
+const { serverConfig } = require('open-music-api-configs');
 const songs = require('./api/songs');
 const albums = require('./api/albums');
 const users = require('./api/users');
-const DbServices = require('./services/postgresql/dbService');
-const { serverConfig } = require('./configs');
+const authentications = require('./api/authentications');
+const DbService = require('./services/postgresql/dbService');
 
 /**
  * Hapi server initialization
  * @async
  */
 const init = async () => {
-  const dbService = new DbServices();
+  const dbService = new DbService();
   const server = Hapi.server({
     port: serverConfig.port,
     host: serverConfig.host,
@@ -37,6 +38,12 @@ const init = async () => {
     },
     {
       plugin: users,
+      options: {
+        dbService,
+      },
+    },
+    {
+      plugin: authentications,
       options: {
         dbService,
       },
