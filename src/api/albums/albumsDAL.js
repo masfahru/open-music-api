@@ -42,14 +42,14 @@ module.exports = class AlbumsDAL {
   /**
    * Get album by id.
    * @async
-   * @param {string} id - Album id
+   * @param {{albumId: string}} - Album id
    * @returns {Promise<object>} - Album object
    * @throws {NotFoundError}
    */
-  async getAlbumById(id) {
+  async getAlbumById({ albumId }) {
     const query = {
       text: 'SELECT id, name, year FROM albums WHERE id = $1',
-      values: [id],
+      values: [albumId],
     };
 
     const result = await this.#dbService.query(query);
@@ -63,10 +63,10 @@ module.exports = class AlbumsDAL {
   /**
    * Get all songs by album id.
    * @async
-   * @param {string} albumId - Album id
+   * @param {{ albumId:string }} - Album id
    * @returns {Promise<object[]>} - List of songs
    */
-  async getSongByAlbumId(albumId) {
+  async getSongByAlbumId({ albumId }) {
     const query = {
       text: 'SELECT id, title, performer FROM songs WHERE album_id = $1',
       values: [albumId],
@@ -113,16 +113,15 @@ module.exports = class AlbumsDAL {
   /**
    * Update album by id.
    * @async
-   * @param {string} id - Album id
-   * @param {object} album - Album object (without id)
+   * @param {{albumId:string, name:string, year:string}} album - Album object (without id)
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async putAlbumById(id, { name, year }) {
+  async putAlbumById({ albumId, name, year }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
-      values: [name, year, updatedAt, id],
+      values: [name, year, updatedAt, albumId],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
@@ -133,14 +132,14 @@ module.exports = class AlbumsDAL {
   /**
    * Delete album by id.
    * @async
-   * @param {string} id - Album id
+   * @param {{albumId: string}} - Album id
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async deleteAlbumById(id) {
+  async deleteAlbumById({ albumId }) {
     const query = {
       text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
-      values: [id],
+      values: [albumId],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {

@@ -61,9 +61,9 @@ module.exports = class AlbumsHandler {
    * @throws {ServerError}
    */
   async getAlbumByIdHandler(request, h) {
-    const { id } = request.params;
-    const album = await this.#albumsDAL.getAlbumById(id);
-    const songs = await this.#albumsDAL.getSongByAlbumId(id);
+    const { albumId } = request.params;
+    const album = await this.#albumsDAL.getAlbumById({ albumId });
+    const songs = await this.#albumsDAL.getSongByAlbumId({ albumId });
     album.songs = songs;
     return h.response({
       status: 'success',
@@ -105,9 +105,9 @@ module.exports = class AlbumsHandler {
    * @throws {ServerError}
    */
   async putAlbumByIdHandler(request, h) {
-    const { id } = request.params;
-    const album = this.#albumValidator.validate(request.payload);
-    await this.#albumsDAL.putAlbumById(id, album);
+    const { albumId } = request.params;
+    const { name, year } = this.#albumValidator.validate(request.payload);
+    await this.#albumsDAL.putAlbumById({ albumId, name, year });
     return h.response({
       status: 'success',
       message: 'Album berhasil diperbarui',
@@ -124,8 +124,8 @@ module.exports = class AlbumsHandler {
    * @throws {ServerError}
    */
   async deleteAlbumByIdHandler(request, h) {
-    const { id } = request.params;
-    await this.#albumsDAL.deleteAlbumById(id);
+    const { albumId } = request.params;
+    await this.#albumsDAL.deleteAlbumById({ albumId });
     return h.response({
       status: 'success',
       message: 'Album berhasil dihapus',
