@@ -94,7 +94,7 @@ module.exports = class PlaylistsHandler {
    * @throws {ServerError}
    */
   async deletePlaylistByIdHandler(request, h) {
-    const { id: playListId } = request.params;
+    const { playListId } = request.params;
     const { id: credentialId } = request.auth.credentials;
     await this.#playlistsDAL.verifyPlaylistOwner({ playListId, owner: credentialId });
     await this.#playlistsDAL.deletePlaylistById({ playListId });
@@ -116,7 +116,7 @@ module.exports = class PlaylistsHandler {
    * @throws {ServerError}
    */
   async postSongToPlaylistByIdHandler(request, h) {
-    const { id: playListId } = request.params;
+    const { playListId } = request.params;
     const { id: credentialId } = request.auth.credentials;
     await this.#playlistsDAL.verifyPlaylistOwner({ playListId, owner: credentialId });
     const { songId } = this.#validator.validateSongId(request.payload);
@@ -139,7 +139,7 @@ module.exports = class PlaylistsHandler {
    * @throws {ServerError}
    */
   async getAllSongsInPlaylistByIdHandler(request, h) {
-    const { id: playListId } = request.params;
+    const { playListId } = request.params;
     const { id: credentialId } = request.auth.credentials;
     await this.#playlistsDAL.verifyPlaylistOwner({ playListId, owner: credentialId });
     const playlist = await this.#playlistsDAL.getAllSongsInPlaylistById({ playListId });
@@ -163,7 +163,7 @@ module.exports = class PlaylistsHandler {
    * @throws {ServerError}
    */
   async deleteSongFromPlaylistByIdHandler(request, h) {
-    const { id: playListId } = request.params;
+    const { playListId } = request.params;
     const { id: credentialId } = request.auth.credentials;
     await this.#playlistsDAL.verifyPlaylistOwner({ playListId, owner: credentialId });
     const { songId } = this.#validator.validateSongId(request.payload);
