@@ -68,8 +68,8 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async getSongByIdHandler(request, h) {
-    const { id } = request.params;
-    const song = await this.#songsDAL.getSongById(id);
+    const { songId } = request.params;
+    const song = await this.#songsDAL.getSongById({ songId });
     return h.response({
       status: 'success',
       data: {
@@ -110,9 +110,10 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async putSongByIdHandler(request, h) {
-    const { id } = request.params;
+    const { songId } = request.params;
     const song = this.#songValidator.validate(request.payload);
-    await this.#songsDAL.putSongById(id, song);
+    song.id = songId;
+    await this.#songsDAL.putSongById(song);
     return h.response({
       status: 'success',
       message: 'Lagu berhasil diperbarui',
@@ -129,8 +130,8 @@ module.exports = class SongsHandler {
    * @throws {ServerError}
    */
   async deleteSongByIdHandler(request, h) {
-    const { id } = request.params;
-    await this.#songsDAL.deleteSongById(id);
+    const { songId } = request.params;
+    await this.#songsDAL.deleteSongById({ songId });
     return h.response({
       status: 'success',
       message: 'Lagu berhasil dihapus',

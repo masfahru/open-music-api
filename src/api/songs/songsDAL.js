@@ -56,14 +56,14 @@ module.exports = class SongsDAL {
   /**
    * Get song by id.
    * @async
-   * @param {string} id - Song id
+   * @param {{songId: string}}
    * @returns {Promise<object>} - Song object
    * @throws {NotFoundError}
    */
-  async getSongById(id) {
+  async getSongById({ songId }) {
     const query = {
       text: 'SELECT id, title, year, performer, genre, duration, album_id FROM songs WHERE id = $1',
-      values: [id],
+      values: [songId],
     };
 
     const result = await this.#dbService.query(query);
@@ -111,12 +111,11 @@ module.exports = class SongsDAL {
   /**
    * Update song by id.
    * @async
-   * @param {string} id - Song id
-   * @param {object} song - Song object (without id)
+   * @param {object} song - Song object
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async putSongById(id, { title, year, performer, genre, duration, albumId }) {
+  async putSongById({ id, title, year, performer, genre, duration, albumId }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
@@ -131,14 +130,14 @@ module.exports = class SongsDAL {
   /**
    * Delete song by id.
    * @async
-   * @param {string} id - Song id
+   * @param {{songId: string}}
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async deleteSongById(id) {
+  async deleteSongById({ songId }) {
     const query = {
       text: 'DELETE FROM songs WHERE id = $1 RETURNING id',
-      values: [id],
+      values: [songId],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
