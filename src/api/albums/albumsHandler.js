@@ -106,8 +106,9 @@ module.exports = class AlbumsHandler {
    */
   async putAlbumByIdHandler(request, h) {
     const { albumId } = request.params;
-    const { name, year } = this.#albumValidator.validate(request.payload);
-    await this.#albumsDAL.putAlbumById({ albumId, name, year });
+    const album = this.#albumValidator.validate(request.payload);
+    album.id = albumId;
+    await this.#albumsDAL.putAlbumById(album);
     return h.response({
       status: 'success',
       message: 'Album berhasil diperbarui',

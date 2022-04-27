@@ -42,7 +42,7 @@ module.exports = class AlbumsDAL {
   /**
    * Get album by id.
    * @async
-   * @param {{albumId: string}} - Album id
+   * @param {{albumId: string}}
    * @returns {Promise<object>} - Album object
    * @throws {NotFoundError}
    */
@@ -63,7 +63,7 @@ module.exports = class AlbumsDAL {
   /**
    * Get all songs by album id.
    * @async
-   * @param {{ albumId:string }} - Album id
+   * @param {{albumId: string}}
    * @returns {Promise<object[]>} - List of songs
    */
   async getSongByAlbumId({ albumId }) {
@@ -83,7 +83,7 @@ module.exports = class AlbumsDAL {
   /**
    * Create a new album.
    * @async
-   * @param {object} album - Album object (without id)
+   * @param {{name:string, year: number}} - Album object (without id)
    * @returns {Promise<object>} - Album object
    * @throws {InvariantError} - Invalid album or album already exists or database error
    */
@@ -113,15 +113,15 @@ module.exports = class AlbumsDAL {
   /**
    * Update album by id.
    * @async
-   * @param {{albumId:string, name:string, year:string}} album - Album object (without id)
+   * @param {{id:string, name:string, year:number}} - Album object
    * @returns {void}
    * @throws {NotFoundError}
    */
-  async putAlbumById({ albumId, name, year }) {
+  async putAlbumById({ id, name, year }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
-      values: [name, year, updatedAt, albumId],
+      values: [name, year, updatedAt, id],
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
@@ -132,7 +132,7 @@ module.exports = class AlbumsDAL {
   /**
    * Delete album by id.
    * @async
-   * @param {{albumId: string}} - Album id
+   * @param {{albumId: string}}
    * @returns {void}
    * @throws {NotFoundError}
    */
