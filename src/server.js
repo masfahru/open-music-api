@@ -7,6 +7,7 @@ const albums = require('./api/albums');
 const users = require('./api/users');
 const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
+const collaborations = require('./api/collaborations');
 const DbService = require('./services/postgresql/dbService');
 
 /**
@@ -79,6 +80,12 @@ const init = async () => {
         dbService,
       },
     },
+    {
+      plugin: collaborations,
+      options: {
+        dbService,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -95,8 +102,16 @@ const init = async () => {
       return newResponse;
     }
 
-    if (response instanceof Error) {
-      console.log(response);
+    if (response.isBoom) {
+      if (response.output.statusCode === 500) {
+        console.log(response);
+      }
+      const newResponse = h.response({
+        status: response.output.payload.error,
+        message: response.output.payload.message,
+      });
+      newResponse.code(response.output.payload.statusCode);
+      return newResponse;
     }
 
     // if not error, return the response

@@ -14,6 +14,8 @@ module.exports = class DbService {
 
   constructor() {
     this.#pool = new Pool(dbConfig);
+    this.query = this.query.bind(this);
+    this.getClient = this.getClient.bind(this);
   }
 
   /**
@@ -38,7 +40,7 @@ module.exports = class DbService {
     const { query, release } = client;
     // set a timeout of 3 seconds, after which we will log this client's last query
     const timeout = setTimeout(() => {
-      console.error('A client has been checked out for more than 5 seconds!');
+      console.error('A client has been checked out for more than 3 seconds!');
       console.error(
         `The last executed query on this client was: ${client.lastQuery}`,
       );

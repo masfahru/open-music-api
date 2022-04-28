@@ -51,23 +51,21 @@ module.exports = class PlaylistsDAL {
   /**
    * Get all playlists.
    * @async
-   * @param {{owner: string}}
+   * @param {{userId: string}}
    * @returns {Promise<object[]>} - List of playlists
    * @throws {NotFoundError}
    */
-  async getAllPlaylists({ owner }) {
+  async getAllPlaylists({ userId }) {
     const query = {
       text: `SELECT playlists.id, name, username
-      FROM playlists LEFT JOIN users 
-      ON playlists.owner = users.id
-      WHERE playlists.owner = $1`,
-      values: [owner],
+      FROM playlists 
+      LEFT JOIN users ON playlists.owner = users.id
+      LEFT JOIN collaborations ON playlists.id = collaborations.playlist_id
+      WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
+      values: [userId],
     };
 
     const result = await this.#dbService.query(query);
-    if (!result.rows[0]) {
-      throw new NotFoundError('Belum ada playlist yang ditambahkan');
-    }
 
     return result.rows;
   }
@@ -76,7 +74,7 @@ module.exports = class PlaylistsDAL {
    * Delete playlist by id.
    * @async
    * @param {{playlistId: string}} - Playlist Id
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
   async deletePlaylistById({ playlistId }) {
@@ -94,17 +92,55 @@ module.exports = class PlaylistsDAL {
    * Verify playlist owner
    * @async
    * @param {{playlistId: string, owner:string}}
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {AuthorizationError}
    */
   async verifyPlaylistOwner({ playlistId, owner }) {
-    const query = {
+    const queryOwner = {
       text: 'SELECT owner FROM playlists WHERE id = $1',
       values: [playlistId],
     };
-    const result = await this.#dbService.query(query);
+    const result = await this.#dbService.query(queryOwner);
     if (result.rows[0] && result.rows[0].owner !== owner) {
-      throw new AuthorizationError('Anda tidak memiliki hak akses');
+      throw new AuthorizationError(
+        'Anda tidak memiliki hak akses pada playlist ini',
+      );
+    }
+  }
+
+  /**
+   * Verify playlist collaboration
+   * @async
+   * @param {{playlistId: string, userId: string}}
+   * @returns {Promise<void>}
+   * @throws {AuthorizationError}
+   */
+  async verifyPlaylistCollaboration({ playlistId, userId }) {
+    const client = await this.#dbService.getClient();
+    try {
+      await client.query('BEGIN');
+
+      const queryOwner = {
+        text: 'SELECT owner FROM playlists WHERE id = $1',
+        values: [playlistId],
+      };
+      const result = await this.#dbService.query(queryOwner);
+      if (result.rows[0] && result.rows[0].owner !== userId) {
+        const queryCollaborator = {
+          text: 'SELECT user_id FROM collaborations WHERE playlist_id = $1 AND user_id = $2',
+          values: [playlistId, userId],
+        };
+        const collaborator = await this.#dbService.query(queryCollaborator);
+        if (!collaborator.rows[0]) {
+          throw new AuthorizationError('Anda tidak memiliki hak akses pada playlist ini');
+        }
+      }
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
   }
 
@@ -112,7 +148,7 @@ module.exports = class PlaylistsDAL {
    * Post Song to playlist by id
    * @async
    * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
   async postSongToPlaylistById({ playlistId, songId }) {
@@ -204,7 +240,7 @@ module.exports = class PlaylistsDAL {
    * Delete song from playlist by id
    * @async
    * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
   async deleteSongFromPlaylistById({ playlistId, songId }) {
