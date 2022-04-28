@@ -53,7 +53,6 @@ module.exports = class PlaylistsDAL {
    * @async
    * @param {{userId: string}}
    * @returns {Promise<object[]>} - List of playlists
-   * @throws {NotFoundError}
    */
   async getAllPlaylists({ userId }) {
     const query = {
@@ -66,7 +65,6 @@ module.exports = class PlaylistsDAL {
     };
 
     const result = await this.#dbService.query(query);
-
     return result.rows;
   }
 
@@ -101,7 +99,11 @@ module.exports = class PlaylistsDAL {
       values: [playlistId],
     };
     const result = await this.#dbService.query(queryOwner);
-    if (result.rows[0] && result.rows[0].owner !== owner) {
+    if (!result.rows[0]) {
+      throw new NotFoundError(
+        'Playlist Tidak ditemukan',
+      );
+    } else if (result.rows[0].owner !== owner) {
       throw new AuthorizationError(
         'Anda tidak memiliki hak akses pada playlist ini',
       );
@@ -251,6 +253,58 @@ module.exports = class PlaylistsDAL {
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
       throw new NotFoundError('Gagal menghapus lagu dari playlist');
+    }
+  }
+
+  /**
+   * Add Activity to playlist activity
+   */
+  async addActivityToPlaylistActivity({ playlistId, songId, userId, action }) {
+    const id = `playlist-activity-${nanoid()}`;
+    const time = new Date().toISOString();
+    const query = {
+      text: 'INSERT INTO playlist_song_activities VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      values: [id, playlistId, songId, userId, action, time],
+    };
+    const result = await this.#dbService.query(query);
+    if (!result.rows[0].id) {
+      throw new InvariantError('Gagal menambahkan aktivitas playlist');
+    }
+  }
+
+  /**
+   * Get Playlist Activities
+   */
+  async getPlaylistActivities({ playlistId }) {
+    const client = await this.#dbService.getClient();
+    try {
+      const result = { playlistId };
+      await client.query('BEGIN');
+      const queryPlaylist = {
+        text: 'SELECT * FROM playlists WHERE id = $1',
+        values: [playlistId],
+      };
+      const playlist = await this.#dbService.query(queryPlaylist);
+      if (!playlist.rows[0]) {
+        throw new NotFoundError('Playlist tidak ditemukan');
+      }
+      const queryActivities = {
+        text: `SELECT username, title, action, time
+        FROM playlist_song_activities
+        LEFT JOIN users ON playlist_song_activities.user_id = users.id
+        LEFT JOIN songs ON playlist_song_activities.song_id = songs.id
+        WHERE playlist_song_activities.playlist_id = $1`,
+        values: [playlistId],
+      };
+      const activities = await this.#dbService.query(queryActivities);
+      result.activities = activities.rows;
+      await client.query('COMMIT');
+      return result;
+    } catch (e) {
+      await client.query('ROLLBACK');
+      throw e;
+    } finally {
+      client.release();
     }
   }
 };

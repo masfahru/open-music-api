@@ -31,6 +31,7 @@ module.exports = class PlaylistsHandler {
     this.postSongToPlaylistByIdHandler = this.postSongToPlaylistByIdHandler.bind(this);
     this.getAllSongsInPlaylistByIdHandler = this.getAllSongsInPlaylistByIdHandler.bind(this);
     this.deleteSongFromPlaylistByIdHandler = this.deleteSongFromPlaylistByIdHandler.bind(this);
+    this.getPlaylistActivitiesHandler = this.getPlaylistActivitiesHandler.bind(this);
   }
 
   /**
@@ -94,7 +95,10 @@ module.exports = class PlaylistsHandler {
   async deletePlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.#playlistsDAL.verifyPlaylistOwner({ playlistId, owner: credentialId });
+    await this.#playlistsDAL.verifyPlaylistOwner({
+      playlistId,
+      owner: credentialId,
+    });
     await this.#playlistsDAL.deletePlaylistById({ playlistId });
     return h
       .response({
@@ -117,9 +121,18 @@ module.exports = class PlaylistsHandler {
   async postSongToPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.#playlistsDAL.verifyPlaylistCollaboration({ playlistId, userId: credentialId });
+    await this.#playlistsDAL.verifyPlaylistCollaboration({
+      playlistId,
+      userId: credentialId,
+    });
     const { songId } = this.#validator.validateSongId(request.payload);
     await this.#playlistsDAL.postSongToPlaylistById({ playlistId, songId });
+    await this.#playlistsDAL.addActivityToPlaylistActivity({
+      playlistId,
+      songId,
+      userId: credentialId,
+      action: 'add',
+    });
     return h
       .response({
         status: 'success',
@@ -140,14 +153,44 @@ module.exports = class PlaylistsHandler {
   async getAllSongsInPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.#playlistsDAL.verifyPlaylistCollaboration({ playlistId, userId: credentialId });
-    const playlist = await this.#playlistsDAL.getAllSongsInPlaylistById({ playlistId });
+    await this.#playlistsDAL.verifyPlaylistCollaboration({
+      playlistId,
+      userId: credentialId,
+    });
+    const playlist = await this.#playlistsDAL.getAllSongsInPlaylistById({
+      playlistId,
+    });
     return h
       .response({
         status: 'success',
         data: {
           playlist,
         },
+      })
+      .code(200);
+  }
+
+  /**
+   * Get Playlist Activities
+   * @param {object} request - Hapi request object
+   * @param {object} h - Hapi response object
+   * @return {object} Hapi response object
+   * @async
+   * @throws {NotFoundError}
+   * @throws {ServerError}
+   */
+  async getPlaylistActivitiesHandler(request, h) {
+    const { playlistId } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+    await this.#playlistsDAL.verifyPlaylistOwner({
+      playlistId,
+      owner: credentialId,
+    });
+    const data = await this.#playlistsDAL.getPlaylistActivities({ playlistId });
+    return h
+      .response({
+        status: 'success',
+        data,
       })
       .code(200);
   }
@@ -164,9 +207,18 @@ module.exports = class PlaylistsHandler {
   async deleteSongFromPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.#playlistsDAL.verifyPlaylistCollaboration({ playlistId, userId: credentialId });
+    await this.#playlistsDAL.verifyPlaylistCollaboration({
+      playlistId,
+      userId: credentialId,
+    });
     const { songId } = this.#validator.validateSongId(request.payload);
     await this.#playlistsDAL.deleteSongFromPlaylistById({ playlistId, songId });
+    await this.#playlistsDAL.addActivityToPlaylistActivity({
+      playlistId,
+      songId,
+      userId: credentialId,
+      action: 'delete',
+    });
     return h
       .response({
         status: 'success',
