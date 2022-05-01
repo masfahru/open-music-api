@@ -29,7 +29,7 @@ module.exports = class CollaborationsDAL {
    * @async
    * @param {{playlistId: string, owner: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Check if playlist id is present
    * If not, @throws {NotFoundError}
    * 2. Check if playlist.owner = parameter owner
@@ -56,7 +56,7 @@ module.exports = class CollaborationsDAL {
    * @async
    * @param {{playlistId: string, userId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Check if user id is present
    * If not, @throws {NotFoundError}
    * 2. Check if playlist id is present
@@ -126,7 +126,7 @@ module.exports = class CollaborationsDAL {
    * @async
    * @param {{playlistId: string, userId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Check if playlist id is present
    * If not, @throws {NotFoundError}
    * 2. Check if user id is present

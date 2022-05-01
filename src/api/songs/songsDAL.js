@@ -26,7 +26,7 @@ module.exports = class SongsDAL {
    * @async
    * @param {object} [queryStrings]
    *
-   * Algorithms:
+   * Steps:
    * 1. Create base query
    * 2. Add query string if available
    * 3. Execute query
@@ -65,7 +65,7 @@ module.exports = class SongsDAL {
    * @async
    * @param {{songId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song by id
    * If no result, @throws {NotFoundError}
    * 3. Map result to song model
@@ -91,7 +91,7 @@ module.exports = class SongsDAL {
    * @async
    * @param {object} song
    *
-   * Algorithms:
+   * Steps:
    * 1. Generate id
    * 2. Generate created_at and updated_at
    * 3. Insert song to database
@@ -131,7 +131,7 @@ module.exports = class SongsDAL {
    * @async
    * @param {object} song
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song by id
    * If no result, @throws {NotFoundError}
    * 2. Update song
@@ -183,7 +183,7 @@ module.exports = class SongsDAL {
    * @async
    * @param {{songId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song by id
    * If no result, @throws {NotFoundError}
    * 2. Delete song

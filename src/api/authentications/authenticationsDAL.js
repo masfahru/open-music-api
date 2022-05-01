@@ -59,7 +59,7 @@ module.exports = class AuthenticationsDAL {
    * @async
    * @param {{username: string, password: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get User by username
    * If user not found, @throws {NotFoundError}
    * 2. Verify password
@@ -91,7 +91,7 @@ module.exports = class AuthenticationsDAL {
    * @async
    * @param {{refreshToken: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Delete refresh token from authentication
    * If refresh token not found, @throws {AuthenticationError}
    *

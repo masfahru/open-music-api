@@ -91,7 +91,7 @@ module.exports = class PlaylistsDAL {
    * @async
    * @param {{playlistId: string, owner:string}}
    *
-   * Algorithms:
+   * Steps:
    * Get playlist data
    * if the playlist not found, @throws {NotFoundError}
    * if the user is not the owner, @throws {AuthorizationError}
@@ -119,7 +119,7 @@ module.exports = class PlaylistsDAL {
    * @async
    * @param {{playlistId: string, userId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist data
    * if the playlist not found, @throws {NotFoundError}
    * 2. Check if the user is the owner of the playlist
@@ -168,7 +168,7 @@ module.exports = class PlaylistsDAL {
    * @async
    * @param {{playlistId: string, songId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist data
    * if the playlist not found, @throws {NotFoundError}
    * 2. Get song data
@@ -231,7 +231,7 @@ module.exports = class PlaylistsDAL {
    * @async
    * @param {{playlistId: string}}
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist data
    * if the playlist not found, @throws {NotFoundError}
    * 2. Get all songs in the playlist
@@ -282,8 +282,12 @@ module.exports = class PlaylistsDAL {
    * Delete song from playlist by id
    * @async
    * @param {{playlistId: string, songId: string}}
+   *
+   * Steps:
+   * Delete the song from the playlist
+   * if no song deleted, @throws {NotFoundError}
+   *
    * @returns {Promise<void>}
-   * @throws {NotFoundError}
    */
   async deleteSongFromPlaylistById({ playlistId, songId }) {
     const query = {
@@ -292,12 +296,20 @@ module.exports = class PlaylistsDAL {
     };
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal menghapus lagu dari playlist');
+      throw new NotFoundError('Lagu tidak ditemukan dalam playlist');
     }
   }
 
   /**
    * Add Activity to playlist activity
+   * @async
+   * @param {{playlistId: string, userId: string, activity: string}}
+   *
+   * Steps:
+   * 1. Insert the activity to the playlist
+   * if insert failed, @throws {InvariantError}
+   *
+   * @returns {Promise<void>}
    */
   async addActivityToPlaylistActivity({ playlistId, songId, userId, action }) {
     const id = `playlist-activity-${nanoid()}`;
@@ -314,6 +326,16 @@ module.exports = class PlaylistsDAL {
 
   /**
    * Get Playlist Activities
+   * @async
+   * @param {{playlistId: string}}
+   *
+   * Steps:
+   * 1. Get playlist data
+   * if the playlist not found, @throws {NotFoundError}
+   * 2. Get all activities in the playlist
+   * 3. Put the activities into playlist object
+   *
+   * @returns {Promise<object[]>}
    */
   async getPlaylistActivities({ playlistId }) {
     const client = await this.#dbService.getClient();

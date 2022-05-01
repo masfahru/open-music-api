@@ -44,7 +44,7 @@ module.exports = class AuthenticationsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate request payload
    * 2. Validate user credential (username and password)
    * 3. Generate access token
@@ -80,7 +80,7 @@ module.exports = class AuthenticationsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate request payload and get refresh token
    * 2. Verify refresh token
    * 3. Generate new access token
@@ -112,7 +112,7 @@ module.exports = class AuthenticationsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate request payload and get refresh token
    * 2. Verify refresh token
    * 3. Delete refresh token from database

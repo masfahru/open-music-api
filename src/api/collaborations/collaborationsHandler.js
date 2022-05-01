@@ -35,7 +35,7 @@ module.exports = class CollaborationsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate payload
    * 2. Validate user ownership of playlist
    * 3. Add collaborator to playlist
@@ -66,7 +66,7 @@ module.exports = class CollaborationsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate payload
    * 2. Validate user ownership of playlist
    * 3. Delete collaborator from playlist

@@ -33,7 +33,7 @@ module.exports = class UsersHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get user by validating request payload
    * 2. Create user
    * 3. Put user into response object

@@ -40,7 +40,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate request payload
    * 2. Get user id from request auth credentials
    * 3. Insert playlist to database
@@ -71,7 +71,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get user id from request auth credentials
    * 2. Get all playlists from database filtered by user id
    * 3. Put playlists to response
@@ -98,7 +98,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist id from request params
    * 2. Get user id from request auth credentials
    * 3. Verify playlist owner
@@ -127,7 +127,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist id from request params
    * 2. Get user id from request auth credentials
    * 3. Verify playlist owner
@@ -165,7 +165,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist id from request params
    * 2. Get user id from request auth credentials
    * 3. Verify playlist owner
@@ -198,7 +198,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist id from request params
    * 2. Get user id from request auth credentials
    * 3. Verify playlist owner
@@ -227,7 +227,7 @@ module.exports = class PlaylistsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get playlist id from request params
    * 2. Get user id from request auth credentials
    * 3. Verify playlist owner

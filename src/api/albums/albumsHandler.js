@@ -38,7 +38,7 @@ module.exports = class AlbumsHandler {
    * @param {object} _ - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get All Albums
    * 2. Put albums in response
    *
@@ -60,7 +60,7 @@ module.exports = class AlbumsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get Album by id
    * 2. Get list of songs with same album id
    * 3. Put list of song in album object
@@ -87,7 +87,7 @@ module.exports = class AlbumsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate album data in request
    * 2. Create album based on validated album data
    * 3. Put created album id in response
@@ -112,7 +112,7 @@ module.exports = class AlbumsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate album data in request
    * 2. Update album based on validated album data
    * 3. Put updated album in response
@@ -136,7 +136,7 @@ module.exports = class AlbumsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Delete album
    *
    * @return {Promise<response>} Hapi response object

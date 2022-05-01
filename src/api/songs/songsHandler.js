@@ -37,7 +37,7 @@ module.exports = class SongsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get query strings
    * 2. Get songs
    * 3. Put songs into response object
@@ -67,7 +67,7 @@ module.exports = class SongsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song id
    * 2. Get song
    * 3. Put song into response object
@@ -90,7 +90,7 @@ module.exports = class SongsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Validate request payload
    * 2. Save song to database
    * 3. Put song id into response object
@@ -114,7 +114,7 @@ module.exports = class SongsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song id from request params
    * 2. Validate request payload
    * 3. Update song
@@ -138,7 +138,7 @@ module.exports = class SongsHandler {
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
    *
-   * Algorithms:
+   * Steps:
    * 1. Get song id from request params
    * 2. Delete song
    * 3. Return success message

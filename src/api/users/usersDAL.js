@@ -26,7 +26,7 @@ module.exports = class UsersDAL {
    * @async
    * @param {object} user
    *
-   * Algorithms:
+   * Steps:
    * 1. Check if user already exists
    * If user already exists, @throws {InvariantError}
    * 2. Generate user id

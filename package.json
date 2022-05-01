@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start-prod": "node ./src/server.js",
-    "start-dev": "node-pg-migrate down 8 & node-pg-migrate up & nodemon ./src/server.js",
+    "start-dev": "node-pg-migrate down 10 & node-pg-migrate up & nodemon ./src/server.js",
     "lint": "eslint ./src",
     "migrate": "node-pg-migrate"
   },
