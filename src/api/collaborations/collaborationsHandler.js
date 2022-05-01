@@ -39,6 +39,7 @@ module.exports = class CollaborationsHandler {
    * 1. Validate payload
    * 2. Validate user ownership of playlist
    * 3. Add collaborator to playlist
+   *
    * @return {Promise<response>} - Hapi response object
    */
   async postCollaborationsHandler(request, h) {
@@ -69,6 +70,7 @@ module.exports = class CollaborationsHandler {
    * 1. Validate payload
    * 2. Validate user ownership of playlist
    * 3. Delete collaborator from playlist
+   *
    * @return {Promise<response>} Hapi response object
    */
   async deleteCollaborationsHandler(request, h) {

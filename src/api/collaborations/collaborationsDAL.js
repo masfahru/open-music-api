@@ -28,9 +28,14 @@ module.exports = class CollaborationsDAL {
    * Verify Playlist Owner.
    * @async
    * @param {{playlistId: string, owner: string}}
+   *
+   * Algorithms:
+   * 1. Check if playlist id is present
+   * If not, @throws {NotFoundError}
+   * 2. Check if playlist.owner = parameter owner
+   * If not, @throws {AuthorizationError}
+   *
    * @returns {Promise<void>}
-   * @throws {NotFoundError}
-   * @throws {AuthorizationError}
    */
   async verifyPlaylistOwner({ playlistId, owner }) {
     const query = {
@@ -38,7 +43,10 @@ module.exports = class CollaborationsDAL {
       values: [playlistId],
     };
     const result = await this.#dbService.query(query);
-    if (result.rows[0] && result.rows[0].owner !== owner) {
+    if (!result.rows[0]) {
+      throw new NotFoundError('Playlist tidak ditemukan');
+    }
+    if (result.rows[0].owner !== owner) {
       throw new AuthorizationError('Anda tidak memiliki hak akses');
     }
   }
@@ -56,6 +64,7 @@ module.exports = class CollaborationsDAL {
    * 3. Check if user is already a collaborator
    * If yes, @throws {InvariantError}
    * 4. Add Collaborator
+   *
    * @returns {Promise<void>}
    */
   async postCollaboration({ playlistId, userId }) {
@@ -118,13 +127,14 @@ module.exports = class CollaborationsDAL {
    * @param {{playlistId: string, userId: string}}
    *
    * Algorithms:
-   * 2. Check if playlist id is present
+   * 1. Check if playlist id is present
    * If not, @throws {NotFoundError}
-   * 1. Check if user id is present
+   * 2. Check if user id is present
    * If not, @throws {NotFoundError}
    * 3. Check if user is already a collaborator
    * If not, @throws {InvariantError}
    * 4. Delete Collaborator
+   *
    * @returns {Promise<void>}
    */
   async deleteCollaboration({ playlistId, userId }) {

@@ -116,6 +116,7 @@ module.exports = class AuthenticationsHandler {
    * 1. Validate request payload and get refresh token
    * 2. Verify refresh token
    * 3. Delete refresh token from database
+   *
    * @return {Promise<response>} Hapi response object
    */
   async deleteAuthenticationHandler(request, h) {

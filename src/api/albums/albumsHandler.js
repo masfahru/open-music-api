@@ -65,6 +65,7 @@ module.exports = class AlbumsHandler {
    * 2. Get list of songs with same album id
    * 3. Put list of song in album object
    * 4. Put album in response
+   *
    * @return {Promise<response>} Hapi response object
    */
   async getAlbumByIdHandler(request, h) {

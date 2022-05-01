@@ -1,4 +1,4 @@
-const { InvariantError, AuthenticationError } = require('open-music-api-exceptions');
+const { AuthenticationError, InvariantError } = require('open-music-api-exceptions');
 const bcrypt = require('bcrypt');
 
 /**
@@ -58,8 +58,14 @@ module.exports = class AuthenticationsDAL {
    * Verify Username and Password
    * @async
    * @param {{username: string, password: string}}
+   *
+   * Algorithms:
+   * 1. Get User by username
+   * If user not found, @throws {NotFoundError}
+   * 2. Verify password
+   * If password not match, @throws {AuthenticationError}
+   *
    * @returns {Promise<id>}
-   * @throws {AuthenticationError}
    */
   async verifyUserCredential({ username, password }) {
     const query = {
@@ -69,7 +75,7 @@ module.exports = class AuthenticationsDAL {
 
     const result = await this.#dbService.query(query);
     if (!result.rows.length) {
-      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+      throw new AuthenticationError('User tidak ditemukan');
     }
 
     const { id, password: hashedPassword } = result.rows[0];
@@ -84,14 +90,22 @@ module.exports = class AuthenticationsDAL {
    * Delete refresh token from authentication.
    * @async
    * @param {{refreshToken: string}}
+   *
+   * Algorithms:
+   * 1. Delete refresh token from authentication
+   * If refresh token not found, @throws {AuthenticationError}
+   *
    * @returns {{Promise<void>}}
    */
   async deleteRefreshToken({ refreshToken }) {
     const query = {
-      text: 'DELETE FROM authentications WHERE token = $1',
+      text: 'DELETE FROM authentications WHERE token = $1 RETURNING token',
       values: [refreshToken],
     };
 
-    await this.#dbService.query(query);
+    const result = await this.#dbService.query(query);
+    if (!result.rows.length) {
+      throw new InvariantError('Refresh token tidak valid');
+    }
   }
 };
