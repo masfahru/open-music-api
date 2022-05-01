@@ -24,7 +24,7 @@ module.exports = class AuthenticationsDAL {
    * Create a new authentication refresh token.
    * @async
    * @param {{refreshToken: string}}
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async postRefreshToken({ refreshToken }) {
     const query = {
@@ -39,7 +39,7 @@ module.exports = class AuthenticationsDAL {
    * Verify the refresh token.
    * @async
    * @param {{refreshToken: string}}
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {InvariantError}
    */
   async verifyRefreshToken({ refreshToken }) {
@@ -57,9 +57,9 @@ module.exports = class AuthenticationsDAL {
   /**
    * Verify Username and Password
    * @async
-   * @param {{username: string, password: string}} - User Creditentials
-   * @returns {Promise<id>} - User id
-   * @throws {AuthenticationError} - if user not found or password incorrect
+   * @param {{username: string, password: string}}
+   * @returns {Promise<id>}
+   * @throws {AuthenticationError}
    */
   async verifyUserCredential({ username, password }) {
     const query = {
@@ -84,7 +84,7 @@ module.exports = class AuthenticationsDAL {
    * Delete refresh token from authentication.
    * @async
    * @param {{refreshToken: string}}
-   * @returns {void}
+   * @returns {{Promise<void>}}
    */
   async deleteRefreshToken({ refreshToken }) {
     const query = {

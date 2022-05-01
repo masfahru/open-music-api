@@ -47,10 +47,16 @@ module.exports = class CollaborationsDAL {
    * Add Collaborator to playlist.
    * @async
    * @param {{playlistId: string, userId: string}}
+   *
+   * Algorithms:
+   * 1. Check if user id is present
+   * If not, @throws {NotFoundError}
+   * 2. Check if playlist id is present
+   * If not, @throws {NotFoundError}
+   * 3. Check if user is already a collaborator
+   * If yes, @throws {InvariantError}
+   * 4. Add Collaborator
    * @returns {Promise<void>}
-   * @throws {NotFoundError}
-   * @throws {InvariantError}
-   * @throws {AuthorizationError}
    */
   async postCollaboration({ playlistId, userId }) {
     const client = await this.#dbService.getClient();
@@ -73,6 +79,14 @@ module.exports = class CollaborationsDAL {
       const playlist = await client.query(playlistQuery);
       if (!playlist.rows[0]) {
         throw new NotFoundError('Playlist tidak ditemukan');
+      }
+      const checkCollabQuery = {
+        text: 'SELECT id FROM collaborations WHERE playlist_id = $1 AND user_id = $2',
+        values: [playlistId, userId],
+      };
+      const checkCollab = await client.query(checkCollabQuery);
+      if (checkCollab.rows[0]) {
+        throw new InvariantError('User sudah menjadi kolaborator');
       }
       const query = {
         text:
@@ -102,21 +116,44 @@ module.exports = class CollaborationsDAL {
    * Delete Collaborator from playlist.
    * @async
    * @param {{playlistId: string, userId: string}}
+   *
+   * Algorithms:
+   * 2. Check if playlist id is present
+   * If not, @throws {NotFoundError}
+   * 1. Check if user id is present
+   * If not, @throws {NotFoundError}
+   * 3. Check if user is already a collaborator
+   * If not, @throws {InvariantError}
+   * 4. Delete Collaborator
    * @returns {Promise<void>}
-   * @throws {NotFoundError}
-   * @throws {InvariantError}
    */
   async deleteCollaboration({ playlistId, userId }) {
     const client = await this.#dbService.getClient();
     try {
       await client.query('BEGIN');
+      const playlistQuery = {
+        text: 'SELECT id FROM playlists WHERE id = $1',
+        values: [playlistId],
+      };
+      const playlist = await client.query(playlistQuery);
+      if (!playlist.rows[0]) {
+        throw new NotFoundError('Playlist tidak ditemukan');
+      }
+      const userQuery = {
+        text: 'SELECT id FROM users WHERE id = $1',
+        values: [userId],
+      };
+      const user = await client.query(userQuery);
+      if (!user.rows[0]) {
+        throw new NotFoundError('User tidak ditemukan');
+      }
       const queryId = {
         text: 'SELECT id FROM collaborations WHERE playlist_id = $1 AND user_id = $2',
         values: [playlistId, userId],
       };
       const resId = await this.#dbService.query(queryId);
       if (!resId.rows[0]) {
-        throw new NotFoundError('Collaborator tidak ditemukan');
+        throw new InvariantError('User bukan collaborator di playlist ini');
       }
       const queryDelete = {
         text: 'DELETE FROM collaborations WHERE id = $1 RETURNING id',

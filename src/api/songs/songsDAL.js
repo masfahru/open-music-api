@@ -24,9 +24,16 @@ module.exports = class SongsDAL {
   /**
    * Get all songs.
    * @async
-   * @param {object} [queryStrings] - Query object
-   * @returns {Promise<object[]>} - List of songs
-   * @throws {NotFoundError}
+   * @param {object} [queryStrings]
+   *
+   * Algorithms:
+   * 1. Create base query
+   * 2. Add query string if available
+   * 3. Execute query
+   * If no result, @throws {NotFoundError}
+   * 4. Map result to song model
+   * 5. Return result
+   * @returns {Promise<object[]>}
    */
   async getAllSongs(queryStrings) {
     const query = {
@@ -57,8 +64,13 @@ module.exports = class SongsDAL {
    * Get song by id.
    * @async
    * @param {{songId: string}}
-   * @returns {Promise<object>} - Song object
-   * @throws {NotFoundError}
+   *
+   * Algorithms:
+   * 1. Get song by id
+   * If no result, @throws {NotFoundError}
+   * 3. Map result to song model
+   * 4. Return result
+   * @returns {Promise<object>}
    */
   async getSongById({ songId }) {
     const query = {
@@ -77,9 +89,15 @@ module.exports = class SongsDAL {
   /**
    * Create a new song.
    * @async
-   * @param {object} song - Song object (without id)
-   * @returns {Promise<object>} - Song object
-   * @throws {InvariantError} - Invalid song or song already exists or database error
+   * @param {object} song
+   *
+   * Algorithms:
+   * 1. Generate id
+   * 2. Generate created_at and updated_at
+   * 3. Insert song to database
+   * If error, @throws {InvariantError}
+   * 4. Return song id
+   * @returns {Promise<object>}
    */
   async postSong({ title, year, performer, genre, duration, albumId }) {
     const id = `song-${nanoid()}`;
@@ -111,19 +129,52 @@ module.exports = class SongsDAL {
   /**
    * Update song by id.
    * @async
-   * @param {object} song - Song object
-   * @returns {void}
-   * @throws {NotFoundError}
+   * @param {object} song
+   *
+   * Algorithms:
+   * 1. Get song by id
+   * If no result, @throws {NotFoundError}
+   * 2. Update song
+   * If error, @throws {InvariantError}
+   *
+   * @returns {Promise<void>}
    */
   async putSongById({ id, title, year, performer, genre, duration, albumId }) {
-    const updatedAt = new Date().toISOString();
-    const query = {
-      text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
-      values: [title, year, performer, genre, duration, albumId, updatedAt, id],
-    };
-    const result = await this.#dbService.query(query);
-    if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
+    const client = await this.#dbService.getClient();
+    try {
+      client.query('BEGIN');
+      const songQuery = {
+        text: 'SELECT id FROM songs WHERE id = $1',
+        values: [id],
+      };
+      const songResult = await client.query(songQuery);
+      if (!songResult.rows[0]) {
+        throw new NotFoundError('Lagu tidak ditemukan');
+      }
+      const updatedAt = new Date().toISOString();
+      const updateQuery = {
+        text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
+        values: [
+          title,
+          year,
+          performer,
+          genre,
+          duration,
+          albumId,
+          updatedAt,
+          id,
+        ],
+      };
+      const result = await client.query(updateQuery);
+      if (!result.rows.length) {
+        throw new InvariantError('Gagal memperbarui lagu.');
+      }
+      client.query('COMMIT');
+    } catch (error) {
+      client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
   }
 
@@ -131,8 +182,13 @@ module.exports = class SongsDAL {
    * Delete song by id.
    * @async
    * @param {{songId: string}}
-   * @returns {void}
-   * @throws {NotFoundError}
+   *
+   * Algorithms:
+   * 1. Get song by id
+   * If no result, @throws {NotFoundError}
+   * 2. Delete song
+   * If error, @throws {InvariantError}
+   * @returns {Promise<void>}
    */
   async deleteSongById({ songId }) {
     const query = {

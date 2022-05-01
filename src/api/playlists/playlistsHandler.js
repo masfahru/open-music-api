@@ -36,11 +36,16 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Create a new playlist.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {InvariantError}
+   *
+   * Algorithms:
+   * 1. Validate request payload
+   * 2. Get user id from request auth credentials
+   * 3. Insert playlist to database
+   * 4. Put playlist id to request payload
+   * @return {Promise<response>} Hapi response object
    */
   async postPlaylistHandler(request, h) {
     const { name } = this.#validator.validatePlaylist(request.payload);
@@ -62,11 +67,15 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Get all playlists.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
+   *
+   * Algorithms:
+   * 1. Get user id from request auth credentials
+   * 2. Get all playlists from database filtered by user id
+   * 3. Put playlists to response
+   * @return {Promise<response>} Hapi response object
    */
   async getAllPlaylistsHandler(request, h) {
     const { id: credentialId } = request.auth.credentials;
@@ -85,12 +94,16 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Delete playlist by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {AuthorizationError}
-   * @throws {NotFoundError}
+   *
+   * Algorithms:
+   * 1. Get playlist id from request params
+   * 2. Get user id from request auth credentials
+   * 3. Verify playlist owner
+   * 4. Delete playlist from database
+   * @return {Promise<response>} Hapi response object
    */
   async deletePlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
@@ -110,13 +123,18 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Insert a song to playlist.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {InvariantError}
-   * @throws {AuthorizationError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get playlist id from request params
+   * 2. Get user id from request auth credentials
+   * 3. Verify playlist owner
+   * 4. Get song id by validating request payload
+   * 5. Insert song to playlist
+   * 6. add activity to playlist activities
+   * @return {Promise<response>} Hapi response object
    */
   async postSongToPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
@@ -143,12 +161,16 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Get all song in the playlist.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get playlist id from request params
+   * 2. Get user id from request auth credentials
+   * 3. Verify playlist owner
+   * 4. Get all songs from playlist
+   * @return {Promise<response>} Hapi response object
    */
   async getAllSongsInPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;
@@ -172,12 +194,16 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Get Playlist Activities
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get playlist id from request params
+   * 2. Get user id from request auth credentials
+   * 3. Verify playlist owner
+   * 4. Get all activities from playlist
+   * @return {Promise<response>} Hapi response object
    */
   async getPlaylistActivitiesHandler(request, h) {
     const { playlistId } = request.params;
@@ -197,12 +223,18 @@ module.exports = class PlaylistsHandler {
 
   /**
    * Delete song from playlist by id
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get playlist id from request params
+   * 2. Get user id from request auth credentials
+   * 3. Verify playlist owner
+   * 4. Get song id from request params
+   * 5. Delete song from playlist
+   * 6. add activity to playlist activities
+   * @return {Promise<response>} Hapi response object
    */
   async deleteSongFromPlaylistByIdHandler(request, h) {
     const { playlistId } = request.params;

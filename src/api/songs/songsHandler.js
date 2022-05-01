@@ -33,12 +33,15 @@ module.exports = class SongsHandler {
 
   /**
    * Get all songs.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get query strings
+   * 2. Get songs
+   * 3. Put songs into response object
+   * @return {Promise<response>} Hapi response object
    */
   async getAllSongsHandler(request, h) {
     const { title, year, performer, genre, duration, albumId } = request.query;
@@ -60,12 +63,15 @@ module.exports = class SongsHandler {
 
   /**
    * Get song by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get song id
+   * 2. Get song
+   * 3. Put song into response object
+   * @return {Promise<response>} Hapi response object
    */
   async getSongByIdHandler(request, h) {
     const { songId } = request.params;
@@ -80,12 +86,15 @@ module.exports = class SongsHandler {
 
   /**
    * Create a new song.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {InvariantError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Validate request payload
+   * 2. Save song to database
+   * 3. Put song id into response object
+   * @return {Promise<response>} Hapi response object
    */
   async postSongHandler(request, h) {
     const song = this.#songValidator.validate(request.payload);
@@ -101,13 +110,16 @@ module.exports = class SongsHandler {
 
   /**
    * Update song by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {ValidationError}
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get song id from request params
+   * 2. Validate request payload
+   * 3. Update song
+   * return success message
+   * @return {Promise<response>} Hapi response object
    */
   async putSongByIdHandler(request, h) {
     const { songId } = request.params;
@@ -122,12 +134,15 @@ module.exports = class SongsHandler {
 
   /**
    * Delete song by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get song id from request params
+   * 2. Delete song
+   * 3. Return success message
+   * @return {Promise<response>} Hapi response object
    */
   async deleteSongByIdHandler(request, h) {
     const { songId } = request.params;

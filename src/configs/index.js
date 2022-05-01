@@ -50,8 +50,21 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
+/**
+ * @namespace serverConfig
+ * @property {string} host
+ * @property {number} port
+ */
 const serverConfig = { host: envVars.HOST, port: envVars.PORT };
 
+/**
+ * @namespace dbConfig
+ * @property {string} host
+ * @property {number} port
+ * @property {string} user
+ * @property {string} password
+ * @property {string} database
+ */
 const dbConfig = {
   host: envVars.PGHOST,
   port: envVars.PGPORT,
@@ -60,6 +73,11 @@ const dbConfig = {
   database: envVars.PGDATABASE,
 };
 
+/**
+ * @namespace jwtConfig
+ * @property {string} accessTokenKey
+ * @property {string} refreshTokenKey
+ */
 const jwtConfig = {
   accessTokenKey: envVars.ACCESS_TOKEN_KEY,
   refreshTokenKey: envVars.REFRESH_TOKEN_KEY,

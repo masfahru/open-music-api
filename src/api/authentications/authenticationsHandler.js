@@ -43,7 +43,16 @@ module.exports = class AuthenticationsHandler {
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
+   *
+   * Algorithms:
+   * 1. Validate request payload
+   * 2. Validate user credential (username and password)
+   * 3. Generate access token
+   * 4. Generate refresh token
+   * 5. Save refresh token to database
+   * 6. Put refresh token and access token to response
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async postAuthenticationHandler(request, h) {
     const { username, password } = this.#validator.validatePostAuthPayload(
@@ -70,7 +79,14 @@ module.exports = class AuthenticationsHandler {
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
+   *
+   * Algorithms:
+   * 1. Validate request payload and get refresh token
+   * 2. Verify refresh token
+   * 3. Generate new access token
+   * 4. Put new access token to response
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async putAuthenticationHandler(request, h) {
     const { refreshToken } = this.#validator.validatePutAuthPayload(
@@ -95,7 +111,12 @@ module.exports = class AuthenticationsHandler {
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
+   *
+   * Algorithms:
+   * 1. Validate request payload and get refresh token
+   * 2. Verify refresh token
+   * 3. Delete refresh token from database
+   * @return {Promise<response>} Hapi response object
    */
   async deleteAuthenticationHandler(request, h) {
     const { refreshToken } = this.#validator.validateDeleteAuthPayload(request.payload);

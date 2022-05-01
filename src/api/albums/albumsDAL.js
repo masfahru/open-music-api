@@ -64,7 +64,7 @@ module.exports = class AlbumsDAL {
    * Get all songs by album id.
    * @async
    * @param {{albumId: string}}
-   * @returns {Promise<object[]>} - List of songs
+   * @returns {Promise<object[]>}
    */
   async getSongByAlbumId({ albumId }) {
     const query = {
@@ -83,9 +83,9 @@ module.exports = class AlbumsDAL {
   /**
    * Create a new album.
    * @async
-   * @param {{name:string, year: number}} - Album object (without id)
-   * @returns {Promise<object>} - Album object
-   * @throws {InvariantError} - Invalid album or album already exists or database error
+   * @param {{name:string, year: number}}
+   * @returns {Promise<object>}
+   * @throws {InvariantError}
    */
   async postAlbum({ name, year }) {
     const id = `album-${nanoid()}`;
@@ -113,8 +113,8 @@ module.exports = class AlbumsDAL {
   /**
    * Update album by id.
    * @async
-   * @param {{id:string, name:string, year:number}} - Album object
-   * @returns {void}
+   * @param {{id:string, name:string, year:number}}
+   * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
   async putAlbumById({ id, name, year }) {
@@ -133,7 +133,7 @@ module.exports = class AlbumsDAL {
    * Delete album by id.
    * @async
    * @param {{albumId: string}}
-   * @returns {void}
+   * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
   async deleteAlbumById({ albumId }) {

@@ -90,8 +90,12 @@ module.exports = class PlaylistsDAL {
    * Verify playlist owner
    * @async
    * @param {{playlistId: string, owner:string}}
+   *
+   * Algorithms:
+   * Get playlist data
+   * if the playlist not found, @throws {NotFoundError}
+   * if the user is not the owner, @throws {AuthorizationError}
    * @returns {Promise<void>}
-   * @throws {AuthorizationError}
    */
   async verifyPlaylistOwner({ playlistId, owner }) {
     const queryOwner = {
@@ -114,8 +118,16 @@ module.exports = class PlaylistsDAL {
    * Verify playlist collaboration
    * @async
    * @param {{playlistId: string, userId: string}}
+   *
+   * Algorithms:
+   * 1. Get playlist data
+   * if the playlist not found, @throws {NotFoundError}
+   * 2. Check if the user is the owner of the playlist
+   * if the user is the owner, it could be a collaborator
+   * 3. Get the collaboration data
+   * if the collaboration not found, @throws {AuthorizationError}
+   * 4. If no error, means the user is a collaborator
    * @returns {Promise<void>}
-   * @throws {AuthorizationError}
    */
   async verifyPlaylistCollaboration({ playlistId, userId }) {
     const client = await this.#dbService.getClient();
@@ -127,7 +139,12 @@ module.exports = class PlaylistsDAL {
         values: [playlistId],
       };
       const result = await this.#dbService.query(queryOwner);
-      if (result.rows[0] && result.rows[0].owner !== userId) {
+      if (!result.rows[0]) {
+        throw new NotFoundError(
+          'Playlist Tidak ditemukan',
+        );
+      }
+      if (result.rows[0].owner !== userId) {
         const queryCollaborator = {
           text: 'SELECT user_id FROM collaborations WHERE playlist_id = $1 AND user_id = $2',
           values: [playlistId, userId],
@@ -149,7 +166,16 @@ module.exports = class PlaylistsDAL {
   /**
    * Post Song to playlist by id
    * @async
-   * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
+   * @param {{playlistId: string, songId: string}}
+   *
+   * Algorithms:
+   * 1. Get playlist data
+   * if the playlist not found, @throws {NotFoundError}
+   * 2. Get song data
+   * if the song not found, @throws {NotFoundError}
+   * 3. Check if the song is already in the playlist
+   * if the song is already in the playlist, @throws {InvariantError}
+   * 4. Insert the song to the playlist
    * @returns {Promise<void>}
    * @throws {NotFoundError}
    */
@@ -173,6 +199,14 @@ module.exports = class PlaylistsDAL {
       if (!song.rows[0]) {
         throw new NotFoundError('Gagal menambahkan lagu. Lagu tidak ditemukan');
       }
+      const songInPlaylistQuery = {
+        text: 'SELECT song_id FROM playlist_songs WHERE playlist_id = $1 AND song_id = $2',
+        values: [playlistId, songId],
+      };
+      const songInPlaylist = await client.query(songInPlaylistQuery);
+      if (songInPlaylist.rows[0]) {
+        throw new InvariantError('Gagal menambahkan lagu. Lagu sudah ada di playlist ini');
+      }
       const id = `playlist-song-${nanoid()}`;
       const createdAt = new Date().toISOString();
       const query = {
@@ -195,9 +229,15 @@ module.exports = class PlaylistsDAL {
   /**
    * Get all songs in playlist by id
    * @async
-   * @param {{playlistId: string}} - Playlist Id
-   * @return {Promise<object[]>} - Playlist with List of songs
-   * @throws {NotFoundError}
+   * @param {{playlistId: string}}
+   *
+   * Algorithms:
+   * 1. Get playlist data
+   * if the playlist not found, @throws {NotFoundError}
+   * 2. Get all songs in the playlist
+   * 3. Put the songs into playlist object
+   *
+   * @return {Promise<object[]>}
    */
   async getAllSongsInPlaylistById({ playlistId }) {
     const client = await this.#dbService.getClient();
@@ -241,7 +281,7 @@ module.exports = class PlaylistsDAL {
   /**
    * Delete song from playlist by id
    * @async
-   * @param {{playlistId: string, songId: string}} - Playlist Id and Song Id
+   * @param {{playlistId: string, songId: string}}
    * @returns {Promise<void>}
    * @throws {NotFoundError}
    */

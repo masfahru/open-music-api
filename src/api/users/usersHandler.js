@@ -29,12 +29,15 @@ module.exports = class UsersHandler {
 
   /**
    * Create a new user.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {InvariantError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get user by validating request payload
+   * 2. Create user
+   * 3. Put user into response object
+   * @return {Promise<response>} - Hapi response object
    */
   async postUserHandler(request, h) {
     const user = this.#userValidator.validate(request.payload);

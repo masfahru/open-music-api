@@ -34,10 +34,12 @@ module.exports = class CollaborationsHandler {
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @throws {AuthorizationError}
-   * @throws {InvariantError}
-   * @throws {NotFoundError}
+   *
+   * Algorithms:
+   * 1. Validate payload
+   * 2. Validate user ownership of playlist
+   * 3. Add collaborator to playlist
+   * @return {Promise<response>} - Hapi response object
    */
   async postCollaborationsHandler(request, h) {
     const { playlistId, userId } = this.#validator.validate(request.payload);
@@ -62,10 +64,12 @@ module.exports = class CollaborationsHandler {
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @throws {AuthorizationError}
-   * @throws {NotFoundError}
-   * @throws {InvariantError}
+   *
+   * Algorithms:
+   * 1. Validate payload
+   * 2. Validate user ownership of playlist
+   * 3. Delete collaborator from playlist
+   * @return {Promise<response>} Hapi response object
    */
   async deleteCollaborationsHandler(request, h) {
     const { playlistId, userId } = this.#validator.validate(request.payload);

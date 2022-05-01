@@ -19,7 +19,7 @@ module.exports = class AlbumsHandler {
 
   /**
    * @constructor
-   * @param {AlbumsDAL} albumsDAL - Albums Data Access Layer
+   * @param {AlbumsDAL} albumsDAL
    * @param {AlbumValidator} albumValidator
    */
   constructor(albumsDAL, albumValidator) {
@@ -34,12 +34,15 @@ module.exports = class AlbumsHandler {
 
   /**
    * Get all albums.
+   * @async
    * @param {object} _ - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get All Albums
+   * 2. Put albums in response
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async getAllAlbumsHandler(_, h) {
     const albums = await this.#albumsDAL.getAllAlbums();
@@ -53,12 +56,16 @@ module.exports = class AlbumsHandler {
 
   /**
    * Get album by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Get Album by id
+   * 2. Get list of songs with same album id
+   * 3. Put list of song in album object
+   * 4. Put album in response
+   * @return {Promise<response>} Hapi response object
    */
   async getAlbumByIdHandler(request, h) {
     const { albumId } = request.params;
@@ -75,12 +82,16 @@ module.exports = class AlbumsHandler {
 
   /**
    * Create a new album.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {InvariantError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Validate album data in request
+   * 2. Create album based on validated album data
+   * 3. Put created album id in response
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async postAlbumHandler(request, h) {
     const album = this.#albumValidator.validate(request.payload);
@@ -96,13 +107,16 @@ module.exports = class AlbumsHandler {
 
   /**
    * Update album by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {ValidationError}
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Validate album data in request
+   * 2. Update album based on validated album data
+   * 3. Put updated album in response
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async putAlbumByIdHandler(request, h) {
     const { albumId } = request.params;
@@ -117,12 +131,14 @@ module.exports = class AlbumsHandler {
 
   /**
    * Delete album by id.
+   * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
-   * @return {object} Hapi response object
-   * @async
-   * @throws {NotFoundError}
-   * @throws {ServerError}
+   *
+   * Algorithms:
+   * 1. Delete album
+   *
+   * @return {Promise<response>} Hapi response object
    */
   async deleteAlbumByIdHandler(request, h) {
     const { albumId } = request.params;
