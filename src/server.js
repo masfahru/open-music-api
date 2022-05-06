@@ -7,7 +7,7 @@ const PlaylistListener = require('./playlists');
 const init = async () => {
   const dbService = new DbService();
   const mailService = new MailService();
-  const playlistListener = PlaylistListener.listener({ dbService, mailService });
+  const playlistListener = await PlaylistListener.listener({ dbService, mailService });
 
   const connection = await amqp.connect(process.env.RABBITMQ_SERVER);
   const channel = await connection.createChannel();

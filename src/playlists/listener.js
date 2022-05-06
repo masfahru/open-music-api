@@ -29,6 +29,7 @@ module.exports = class Listener {
       console.log(result);
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 };
