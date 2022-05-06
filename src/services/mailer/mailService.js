@@ -34,9 +34,7 @@ module.exports = class MailService {
       attachments: [
         {
           filename: 'playlist.json',
-          content: `{
-            playlist: ${JSON.stringify(playlist)},
-          }`,
+          content: `{"playlist": ${JSON.stringify(playlist)}}`,
           contentType: 'application/json',
         },
       ],
