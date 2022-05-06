@@ -38,7 +38,7 @@ module.exports = class PlaylistsDAL {
 
     const playlists = await this.#dbService.query(queryPlaylist);
     if (!playlists.rows[0]) {
-      return [];
+      return null;
     }
     const querySongs = {
       text: `SELECT songs.id, songs.title, songs.performer
