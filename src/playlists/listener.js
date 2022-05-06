@@ -25,8 +25,12 @@ module.exports = class Listener {
     try {
       const { playlistId, targetEmail } = JSON.parse(message.content.toString());
       const playlist = await this.#playlistsDAL.getAllSongsInPlaylistById({ playlistId });
-      const result = await this.#mailService.sendEmail({ targetEmail, playlist });
-      console.log(result);
+      if (playlist) {
+        const result = await this.#mailService.sendEmail({ targetEmail, playlist });
+        console.log(result);
+      } else {
+        console.log(`Playlist ${playlistId} not found`);
+      }
     } catch (error) {
       console.error(error);
       throw error;
