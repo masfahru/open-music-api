@@ -1,5 +1,5 @@
+require('dotenv').config();
 const { Pool } = require('pg');
-const { dbConfig } = require('open-music-api-configs');
 
 /**
  * Database service.
@@ -13,7 +13,13 @@ module.exports = class DbService {
   #pool;
 
   constructor() {
-    this.#pool = new Pool(dbConfig);
+    this.#pool = new Pool({
+      host: process.env.PGHOST,
+      port: process.env.PGPORT,
+      user: process.env.PGUSER,
+      password: process.env.PGPASSWORD,
+      database: process.env.PGDATABASE,
+    });
     this.query = this.query.bind(this);
     this.getClient = this.getClient.bind(this);
   }

@@ -1,13 +1,12 @@
 {
-  "name": "open-music-api",
+  "name": "open-music-api-consumer",
   "version": "1.0.0",
-  "description": "Open Music API - Dicoding Submission",
+  "description": "Open Music API - Dicoding Submission - Consumer RabbitMQ",
   "main": "index.js",
   "scripts": {
     "start-prod": "node ./src/server.js",
-    "start-dev": "node-pg-migrate down 10 & node-pg-migrate up & nodemon ./src/server.js",
-    "lint": "eslint ./src",
-    "migrate": "node-pg-migrate"
+    "start-dev": "nodemon ./src/server.js",
+    "lint": "eslint ./src"
   },
   "author": "Imam Fahrur Rofi",
   "license": "MIT",
@@ -18,15 +17,9 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
-    "@hapi/hapi": "^20.2.2",
-    "@hapi/jwt": "^2.1.1",
-    "bcrypt": "^5.0.1",
+    "amqplib": "^0.8.0",
     "dotenv": "^16.0.0",
-    "joi": "^17.6.0",
-    "nanoid": "^3.3.3",
-    "node-pg-migrate": "^6.2.1",
-    "open-music-api-configs": "file:src/configs",
-    "open-music-api-exceptions": "file:src/exceptions",
+    "nodemailer": "^6.7.5",
     "pg": "^8.7.3",
     "update": "^0.7.4"
   }
