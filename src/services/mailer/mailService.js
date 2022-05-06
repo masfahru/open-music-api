@@ -29,12 +29,12 @@ module.exports = class MailService {
     const message = {
       from: 'Open Music API Apps',
       to: targetEmail,
-      subject: `Ekspor Playlist ${playlist.id}`,
+      subject: `Ekspor Playlist ${playlist.name}`,
       text: 'Terlampir hasil dari ekspor playlist',
       attachments: [
         {
           filename: 'playlist.json',
-          playlist: JSON.stringify(playlist),
+          playlist: `${JSON.stringify(playlist)}`,
         },
       ],
     };
