@@ -32,10 +32,7 @@ module.exports = class PlaylistsDAL {
    */
   async getAllSongsInPlaylistById({ playlistId }) {
     const queryPlaylist = {
-      text: `SELECT playlists.id, name, username 
-        FROM playlists LEFT JOIN users 
-        ON playlists.owner = users.id 
-        WHERE playlists.id = $1`,
+      text: 'SELECT playlists.id, name FROM playlists WHERE playlists.id = $1',
       values: [playlistId],
     };
 
@@ -44,8 +41,8 @@ module.exports = class PlaylistsDAL {
       return [];
     }
     const querySongs = {
-      text: `SELECT songs.id, title, performer
-          FROM playlist_songs RIGHT JOIN songs 
+      text: `SELECT songs.id, songs.title, songs.performer
+          FROM playlist_songs LEFT JOIN songs 
           ON playlist_songs.song_id = songs.id
           WHERE playlist_songs.playlist_id = $1`,
       values: [playlistId],
