@@ -18,6 +18,13 @@ const joi = require('joi');
  *
  * ACCESS_TOKEN_KEY
  * REFRESH_TOKEN_KEY
+ *
+ * RABBITMQ_SERVER
+ *
+ * MAIL_ADDRESS
+ * MAIL_PASSWORD
+ * MAIL_HOST
+ * MAIL_PORT
  */
 // Joi Schema
 const envVarsSchema = joi
@@ -27,15 +34,20 @@ const envVarsSchema = joi
       .string()
       .valid('production', 'development', 'test')
       .required(),
-    HOST: joi.string().required(),
+    HOST: joi.string().hostname().required(),
     PORT: joi.number().port().required(),
-    PGHOST: joi.string().required(),
+    PGHOST: joi.string().hostname().required(),
     PGPORT: joi.number().port().required(),
     PGUSER: joi.string().required(),
     PGPASSWORD: joi.string().required(),
     PGDATABASE: joi.string().required(),
     ACCESS_TOKEN_KEY: joi.string().required(),
     REFRESH_TOKEN_KEY: joi.string().required(),
+    RABBITMQ_SERVER: joi.string().required(),
+    MAIL_ADDRESS: joi.string().email().required(),
+    MAIL_PASSWORD: joi.string().required(),
+    MAIL_HOST: joi.string().hostname().required(),
+    MAIL_PORT: joi.number().port().required(),
   })
   .unknown(); // unknown keys other than in Joi schema are allowed
 
@@ -83,4 +95,30 @@ const jwtConfig = {
   refreshTokenKey: envVars.REFRESH_TOKEN_KEY,
 };
 
-module.exports = { serverConfig, dbConfig, jwtConfig };
+/**
+ * @namespace rabbitmqConfig
+ * @property {string} host
+ */
+const rabbitmqConfig = { host: envVars.RABBITMQ_SERVER };
+
+/**
+ * @namespace mailConfig
+ * @property {string} address
+ * @property {string} password
+ * @property {string} host
+ * @property {number} port
+ */
+const mailConfig = {
+  address: envVars.MAIL_ADDRESS,
+  password: envVars.MAIL_PASSWORD,
+  host: envVars.MAIL_HOST,
+  port: envVars.MAIL_PORT,
+};
+
+module.exports = {
+  serverConfig,
+  dbConfig,
+  jwtConfig,
+  rabbitmqConfig,
+  mailConfig,
+};

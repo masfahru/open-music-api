@@ -8,7 +8,9 @@ const users = require('./api/users');
 const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
-const DbService = require('./services/postgresql/dbService');
+const exportPlaylist = require('./api/export-playlists');
+const DbService = require('./services/sql/postgres/dbService');
+const messageBrokerService = require('./services/message-broker/rabbitmq/messageBrokerService');
 
 /**
  * Hapi server initialization
@@ -84,6 +86,13 @@ const init = async () => {
       plugin: collaborations,
       options: {
         dbService,
+      },
+    },
+    {
+      plugin: exportPlaylist,
+      options: {
+        dbService,
+        messageBrokerService,
       },
     },
   ]);
