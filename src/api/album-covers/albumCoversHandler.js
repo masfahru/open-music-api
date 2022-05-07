@@ -1,8 +1,8 @@
 /**
- * Class to handle requests related to albums.
+ * Class to handle requests related to albums covers.
  * @class
  */
-module.exports = class AlbumCoverHandler {
+module.exports = class AlbumCoversHandler {
   /**
    * Album Data Access Layer.
    * @type {AlbumCoversDAL}

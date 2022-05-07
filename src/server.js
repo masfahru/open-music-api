@@ -15,6 +15,7 @@ const albumCovers = require('./api/album-covers');
 const DbService = require('./services/sql/postgres/dbService');
 const StorageService = require('./services/storage/local/storageService');
 const messageBrokerService = require('./services/message-broker/rabbitmq/messageBrokerService');
+const albumLikes = require('./api/album-likes');
 
 /**
  * Hapi server initialization
@@ -111,6 +112,12 @@ const init = async () => {
       options: {
         dbService,
         storageService,
+      },
+    },
+    {
+      plugin: albumLikes,
+      options: {
+        dbService,
       },
     },
   ]);

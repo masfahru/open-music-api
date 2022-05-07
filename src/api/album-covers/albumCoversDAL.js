@@ -1,6 +1,6 @@
 const { InvariantError } = require('open-music-api-exceptions');
 /**
- * Class of Database access layer (DAL) for the albums.
+ * Class of Database access layer (DAL) for the album covers.
  * @class
  */
 module.exports = class AlbumCoverDAL {
