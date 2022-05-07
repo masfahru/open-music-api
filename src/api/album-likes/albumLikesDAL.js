@@ -12,11 +12,19 @@ module.exports = class AlbumLikesDAL {
   #dbService;
 
   /**
+   * Cache Services
+   * @private
+   */
+  #cacheService;
+
+  /**
    * @constructor
    * @param {DbService} dbService - Database Service
+   * @param {CacheService} cacheService - Cache Service
    */
-  constructor(dbService) {
+  constructor(dbService, cacheService) {
     this.#dbService = dbService;
+    this.#cacheService = cacheService;
   }
 
   /**
@@ -79,7 +87,7 @@ module.exports = class AlbumLikesDAL {
     if (!result.rows[0]) {
       throw new InvariantError('Gagal menyukai album');
     }
-
+    await this.#cacheService.delete(`album-likes-${albumId}`);
     return result.rows[0].id;
   }
 
@@ -103,7 +111,7 @@ module.exports = class AlbumLikesDAL {
     if (!result.rows[0]) {
       throw new InvariantError('Gagal membatalkan suka album');
     }
-
+    await this.#cacheService.delete(`album-likes-${albumId}`);
     return result.rows[0].id;
   }
 
@@ -114,14 +122,18 @@ module.exports = class AlbumLikesDAL {
    * @returns {Promise<object>}
    */
   async getAlbumLikes({ albumId }) {
-    const query = {
-      text: 'SELECT COUNT(id) FROM user_album_likes WHERE album_id = $1',
-      values: [albumId],
-    };
-    const result = await this.#dbService.query(query);
-    if (!result.rows[0]) {
-      return 0;
+    try {
+      const result = JSON.parse(await this.#cacheService.get(`album-likes-${albumId}`));
+      result.isCache = true;
+      return result;
+    } catch (error) {
+      const query = {
+        text: 'SELECT COUNT(id) FROM user_album_likes WHERE album_id = $1',
+        values: [albumId],
+      };
+      const result = await this.#dbService.query(query);
+      await this.#cacheService.set(`album-likes-${albumId}`, JSON.stringify(result.rows[0]));
+      return result.rows[0];
     }
-    return parseInt(result.rows[0].count, 10);
   }
 };

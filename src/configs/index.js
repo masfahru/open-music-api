@@ -25,6 +25,8 @@ const joi = require('joi');
  * MAIL_PASSWORD
  * MAIL_HOST
  * MAIL_PORT
+ *
+ * REDIS_SERVER
  */
 // Joi Schema
 const envVarsSchema = joi
@@ -48,6 +50,7 @@ const envVarsSchema = joi
     MAIL_PASSWORD: joi.string().required(),
     MAIL_HOST: joi.string().hostname().required(),
     MAIL_PORT: joi.number().port().required(),
+    REDIS_SERVER: joi.string().hostname().required(),
   })
   .unknown(); // unknown keys other than in Joi schema are allowed
 
@@ -115,10 +118,15 @@ const mailConfig = {
   port: envVars.MAIL_PORT,
 };
 
+const redisConfig = {
+  host: envVars.REDIS_SERVER,
+};
+
 module.exports = {
   serverConfig,
   dbConfig,
   jwtConfig,
   rabbitmqConfig,
   mailConfig,
+  redisConfig,
 };

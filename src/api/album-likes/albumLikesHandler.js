@@ -64,12 +64,15 @@ module.exports = class AlbumLikesHandler {
    */
   async getAlbumLikesHandler(request, h) {
     const { albumId } = request.params;
-    const likes = await this.#albumLikesDAL.getAlbumLikes({ albumId });
-    return h.response({
+    const albumLikes = await this.#albumLikesDAL.getAlbumLikes({ albumId });
+    const likes = parseInt(albumLikes.count, 10);
+    const result = h.response({
       status: 'success',
       data: {
         likes,
       },
     }).code(200);
+    if (albumLikes.isCache) result.header('X-Data-Source', 'cache');
+    return result;
   }
 };

@@ -31,6 +31,7 @@
     "open-music-api-configs": "file:src/configs",
     "open-music-api-exceptions": "file:src/exceptions",
     "pg": "^8.7.3",
+    "redis": "^4.1.0",
     "update": "^0.7.4"
   }
 }

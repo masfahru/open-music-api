@@ -13,10 +13,10 @@ const albumLikesPlugin = {
   /**
    * @method register
    * @param {Hapi.Server} server - Hapi Server
-   * @param {{dbService: DbService}} options - Plugin options
+   * @param {{dbService: DbService, cacheService: CacheService}} options - Plugin options
    */
-  register: async (server, { dbService }) => {
-    const albumLikesDAL = new AlbumLikesDAL(dbService);
+  register: async (server, { dbService, cacheService }) => {
+    const albumLikesDAL = new AlbumLikesDAL(dbService, cacheService);
     const albumLikesHandler = new AlbumLikesHandler(albumLikesDAL);
     server.route(routes(albumLikesHandler));
   },

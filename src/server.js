@@ -12,10 +12,11 @@ const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
 const exportPlaylist = require('./api/export-playlists');
 const albumCovers = require('./api/album-covers');
+const albumLikes = require('./api/album-likes');
 const DbService = require('./services/sql/postgres/dbService');
 const StorageService = require('./services/storage/local/storageService');
 const messageBrokerService = require('./services/message-broker/rabbitmq/messageBrokerService');
-const albumLikes = require('./api/album-likes');
+const CacheService = require('./services/cache/redis/cacheService');
 
 /**
  * Hapi server initialization
@@ -24,6 +25,7 @@ const albumLikes = require('./api/album-likes');
 const init = async () => {
   const dbService = new DbService();
   const storageService = new StorageService(Path.resolve(__dirname, 'api/public/uploads/images/'));
+  const cacheService = new CacheService();
   const server = Hapi.server({
     port: serverConfig.port,
     host: serverConfig.host,
@@ -118,6 +120,7 @@ const init = async () => {
       plugin: albumLikes,
       options: {
         dbService,
+        cacheService,
       },
     },
   ]);
