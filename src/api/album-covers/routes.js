@@ -1,14 +1,14 @@
 const path = require('path');
 /**
  * Function to route the request to the correct handler.
- * @param {AlbumsCoverHandler} handler
+ * @param {AlbumCoversHandler} handler
  * @returns {Route[]} list of routes
  */
 const routes = (handler) => [
   {
     method: 'POST',
     path: '/albums/{albumId}/covers',
-    handler: handler.postAlbumCoverHandler,
+    handler: handler.postAlbumCoversHandler,
     options: {
       payload: {
         allow: 'multipart/form-data',

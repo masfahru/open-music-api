@@ -5,10 +5,10 @@
 module.exports = class AlbumCoverHandler {
   /**
    * Album Data Access Layer.
-   * @type {AlbumCoverDAL}
+   * @type {AlbumCoversDAL}
    * @private
    */
-  #albumCoverDAL;
+  #albumCoversDAL;
 
   /**
    * Storage Services.
@@ -26,19 +26,19 @@ module.exports = class AlbumCoverHandler {
 
   /**
    * @constructor
-   * @param {AlbumCoverDAL} albumCoverDAL
+   * @param {AlbumCoversDAL} albumCoversDAL
    * @param {StorageService} storageService
    * @param {AlbumCoverValidator} validator
    */
-  constructor(albumCoverDAL, storageService, validator) {
-    this.#albumCoverDAL = albumCoverDAL;
+  constructor(albumCoversDAL, storageService, validator) {
+    this.#albumCoversDAL = albumCoversDAL;
     this.#storageService = storageService;
     this.#validator = validator;
-    this.postAlbumCoverHandler = this.postAlbumCoverHandler.bind(this);
+    this.postAlbumCoversHandler = this.postAlbumCoversHandler.bind(this);
   }
 
   /**
-   * Post Album Cover
+   * Post Album Covers Handler.
    * @async
    * @param {object} request - Hapi request object
    * @param {object} h - Hapi response object
@@ -52,15 +52,15 @@ module.exports = class AlbumCoverHandler {
    *
    * @return {Promise<response>} Hapi response object
    */
-  async postAlbumCoverHandler(request, h) {
+  async postAlbumCoversHandler(request, h) {
     const { albumId } = request.params;
     const { cover } = this.#validator.validateHeaders(request.payload);
-    const currentCover = await this.#albumCoverDAL.getAlbumCover({ albumId });
+    const currentCover = await this.#albumCoversDAL.getAlbumCover({ albumId });
     if (currentCover) {
       await this.#storageService.deleteFile(currentCover);
     }
     const filename = await this.#storageService.writeFile(cover, cover.hapi);
-    await this.#albumCoverDAL.postAlbumCover({ albumId, filename });
+    await this.#albumCoversDAL.postAlbumCover({ albumId, filename });
     return h.response({
       status: 'success',
       message: 'Sampul berhasil diunggah',

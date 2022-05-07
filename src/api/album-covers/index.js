@@ -1,5 +1,5 @@
-const AlbumCoverHandler = require('./albumsCoverHandler');
-const AlbumCoverDAL = require('./albumCoverDAL');
+const AlbumCoversHandler = require('./albumCoversHandler');
+const AlbumCoversDAL = require('./albumCoversDAL');
 const albumCoverValidator = require('./validator');
 const routes = require('./routes');
 
@@ -17,13 +17,13 @@ const albumCoverPlugin = {
    * @param {{dbService: DbService, storageService: StorageService}} options - Plugin options
    */
   register: async (server, { dbService, storageService }) => {
-    const albumCoverDAL = new AlbumCoverDAL(dbService);
-    const albumCoverHandler = new AlbumCoverHandler(
-      albumCoverDAL,
+    const albumCoversDAL = new AlbumCoversDAL(dbService);
+    const albumCoversHandler = new AlbumCoversHandler(
+      albumCoversDAL,
       storageService,
       albumCoverValidator,
     );
-    server.route(routes(albumCoverHandler));
+    server.route(routes(albumCoversHandler));
   },
 };
 

@@ -11,7 +11,7 @@ const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
 const exportPlaylist = require('./api/export-playlists');
-const albumCover = require('./api/albums-cover');
+const albumCovers = require('./api/album-covers');
 const DbService = require('./services/sql/postgres/dbService');
 const StorageService = require('./services/storage/local/storageService');
 const messageBrokerService = require('./services/message-broker/rabbitmq/messageBrokerService');
@@ -107,7 +107,7 @@ const init = async () => {
       },
     },
     {
-      plugin: albumCover,
+      plugin: albumCovers,
       options: {
         dbService,
         storageService,
