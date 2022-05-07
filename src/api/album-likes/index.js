@@ -8,7 +8,7 @@ const routes = require('./routes');
  * Handles all the album likes related routes.
  */
 const albumLikesPlugin = {
-  name: 'albumlikes',
+  name: 'albumLikes',
   version: '1.0.0',
   /**
    * @method register
