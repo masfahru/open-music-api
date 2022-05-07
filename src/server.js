@@ -1,5 +1,7 @@
+const Path = require('path');
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
 const { ClientError } = require('open-music-api-exceptions');
 const { serverConfig, jwtConfig } = require('open-music-api-configs');
 const songs = require('./api/songs');
@@ -9,7 +11,9 @@ const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
 const exportPlaylist = require('./api/export-playlists');
+const albumCover = require('./api/albums-cover');
 const DbService = require('./services/sql/postgres/dbService');
+const StorageService = require('./services/storage/local/storageService');
 const messageBrokerService = require('./services/message-broker/rabbitmq/messageBrokerService');
 
 /**
@@ -18,6 +22,7 @@ const messageBrokerService = require('./services/message-broker/rabbitmq/message
  */
 const init = async () => {
   const dbService = new DbService();
+  const storageService = new StorageService(Path.resolve(__dirname, 'api/public/uploads/images/'));
   const server = Hapi.server({
     port: serverConfig.port,
     host: serverConfig.host,
@@ -25,10 +30,16 @@ const init = async () => {
       cors: {
         origin: ['*'],
       },
+      files: {
+        relativeTo: Path.join(__dirname, 'api/public'),
+      },
     },
   });
 
   await server.register([
+    {
+      plugin: Inert,
+    },
     {
       plugin: Jwt,
     },
@@ -93,6 +104,13 @@ const init = async () => {
       options: {
         dbService,
         messageBrokerService,
+      },
+    },
+    {
+      plugin: albumCover,
+      options: {
+        dbService,
+        storageService,
       },
     },
   ]);

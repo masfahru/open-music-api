@@ -1,5 +1,6 @@
 const { nanoid } = require('nanoid');
 const { InvariantError, NotFoundError } = require('open-music-api-exceptions');
+const { albumDbToModel } = require('./albumsMapper');
 
 /**
  * Class of Database access layer (DAL) for the albums.
@@ -28,7 +29,7 @@ module.exports = class AlbumsDAL {
    */
   async getAllAlbums() {
     const query = {
-      text: 'SELECT id, name, year FROM albums',
+      text: 'SELECT id, name, year, cover_url FROM albums',
     };
 
     const result = await this.#dbService.query(query);
@@ -36,7 +37,7 @@ module.exports = class AlbumsDAL {
       throw new NotFoundError('Belum ada album yang ditambahkan');
     }
 
-    return result.rows;
+    return result.rows.map(albumDbToModel);
   }
 
   /**
@@ -48,7 +49,7 @@ module.exports = class AlbumsDAL {
    */
   async getAlbumById({ albumId }) {
     const query = {
-      text: 'SELECT id, name, year FROM albums WHERE id = $1',
+      text: 'SELECT id, name, year, cover_url FROM albums WHERE id = $1',
       values: [albumId],
     };
 
@@ -57,7 +58,7 @@ module.exports = class AlbumsDAL {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows[0];
+    return albumDbToModel(result.rows[0]);
   }
 
   /**
