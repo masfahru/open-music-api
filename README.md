@@ -4,13 +4,13 @@ This project is my submission for Dicoding's Back-end Learning Path. It's not a 
 
 ## Technologies
 
-    * [Node.js](https://nodejs.org/)
-    * [Hapi.js](https://hapijs.com/)
-    * [PostgreSQL](https://www.postgresql.org/)
-    * [JSON Web Tokens](https://jwt.io/)
-    * [Redis](https://redis.io/)
-    * [RabbitMQ](https://www.rabbitmq.com/)
-    * [Nodemailer](https://nodemailer.com/)
+* [Node.js](https://nodejs.org/)
+* [Hapi.js](https://hapijs.com/)
+* [PostgreSQL](https://www.postgresql.org/)
+* [JSON Web Tokens](https://jwt.io/)
+* [Redis](https://redis.io/)
+* [RabbitMQ](https://www.rabbitmq.com/)
+* [Nodemailer](https://nodemailer.com/)
 
 ## Installation
 
