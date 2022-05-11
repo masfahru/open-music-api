@@ -1,7 +1,16 @@
-const rabbitmqConfig = require('open-music-api-configs');
+const { rabbitmqConfig } = require('open-music-api-configs');
 const amqp = require('amqplib');
 
+/**
+ * Message broker service.
+ */
 const messageBrokerService = {
+  /**
+   * @method sendMessage
+   * @param {string} queueName
+   * @param {object} message
+   * @returns {Promise<void>}}
+   */
   sendMessage: async (queue, message) => {
     const connection = await amqp.connect(rabbitmqConfig.host);
     const channel = await connection.createChannel();
