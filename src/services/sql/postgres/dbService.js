@@ -27,6 +27,7 @@ module.exports = class DbService {
     const start = Date.now();
     const res = await this.#pool.query(text, values);
     const duration = Date.now() - start;
+    // this logging is just for development purposes, you should remove it in production
     console.log('PostgreQuery:', { text, duration, rows: res.rowCount });
     return res;
   }
