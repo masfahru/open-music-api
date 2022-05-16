@@ -18,11 +18,12 @@ Make sure your environment has Node.js, PostgreSQL, Redis, and RabbitMQ installe
 
 1. Clone the repository
 2. Install dependencies using `npm install`
-3. Modify the `.env.example` file to your needs
-4. Rename the `.env.example` file to `.env`
-5. Run database migration using `npx node-pg-migrate up`, well make sure your PostgreSQL is up so there won't be any error
-6. Start the server using `npm start-prod`
-7. If you want to run the server in development mode, use `npm start-dev`
+3. Create PostgreSQL database for development
+4. Modify the `.env.example` file to your needs
+5. Rename the `.env.example` file to `.env`
+6. Run database migration using `npx node-pg-migrate up`, well make sure your PostgreSQL is up so there won't be any error
+7. Start the server using `npm run start-prod`
+8. If you want to run the server in development mode, use `npm run start-dev`
 
 ## Testing
 
